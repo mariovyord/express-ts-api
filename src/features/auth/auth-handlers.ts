@@ -1,7 +1,7 @@
-import mapErrors from "../utils/map-errors";
-import JsonResponse from "../utils/json-response";
-import authService from "../services/auth.service";
-import PublicUser from "../utils/public-user";
+import mapErrors from "../../utils/map-errors";
+import JsonResponse from "../../utils/json-response";
+import authService from "./auth-service";
+import PublicUser from "../../utils/public-user";
 import { Request, Response } from "express";
 
 const authCookieName = "jwt";

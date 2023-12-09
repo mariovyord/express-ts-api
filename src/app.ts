@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import router from "./router/router";
+import router from "./root-router";
 import path from "path";
 import handleErrors from "./middleware/error.middleware";
 import loggerMiddleware from "./middleware/logger.middleware";

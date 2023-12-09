@@ -1,4 +1,4 @@
-import Article from "../database/models/article.model";
+import Article from "../../database/models/article.model";
 
 export const getAll = async (query: any) => {
   const options = {};

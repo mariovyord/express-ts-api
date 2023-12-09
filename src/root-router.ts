@@ -1,7 +1,7 @@
 import express from "express";
-import auth from "./auth/auth.router";
-import article from "./article/article.router";
-import JsonResponse from "../utils/json-response";
+import auth from "./features/auth/auth-router";
+import article from "./features/article/article-router";
+import JsonResponse from "./utils/json-response";
 
 const router = express.Router();
 

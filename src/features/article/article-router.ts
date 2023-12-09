@@ -1,5 +1,5 @@
 import express from "express";
-import * as articleController from "../../controllers/article.controller";
+import * as articleController from "./article-handlers";
 import authenticateToken from "../../middleware/auth.middleware";
 
 const router = express.Router();

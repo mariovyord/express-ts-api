@@ -1,6 +1,6 @@
-import mapErrors from "../utils/map-errors";
-import JsonResponse from "../utils/json-response";
-import * as articleService from "../services/article.service";
+import mapErrors from "../../utils/map-errors";
+import JsonResponse from "../../utils/json-response";
+import * as articleService from "./article-service";
 import { Request, Response } from "express";
 
 export const getAll = () => async (req: Request, res: Response) => {

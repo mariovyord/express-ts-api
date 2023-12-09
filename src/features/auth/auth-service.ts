@@ -1,4 +1,4 @@
-import User from "../database/models/user.model";
+import User from "../../database/models/user.model";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 
