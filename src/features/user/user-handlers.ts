@@ -1,7 +1,7 @@
 import mapErrors from "../../utils/map-errors";
 import JsonResponse from "../../utils/json-response";
 import authService from "./user-service";
-import PublicUser from "../../utils/public-user";
+import { UserEntity } from "./user-types";
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
@@ -23,7 +23,7 @@ export const signUp =
       const body = new JsonResponse({
         code: 201,
         message: "Sign up successful",
-        data: new PublicUser(result.user),
+        data: new UserEntity(result.user),
       });
 
       return res
@@ -47,7 +47,7 @@ export const signIn =
       const body = new JsonResponse({
         code: 200,
         message: "Sign in successful",
-        data: new PublicUser(result.user),
+        data: new UserEntity(result.user),
       });
       return res
         .cookie(authCookieName, result.token, authCookieOptions)

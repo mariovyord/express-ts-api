@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
+import { IUser } from "./user-types";
 // import beautifyUnique from "mongoose-beautiful-unique-validation";
-import { IUser } from "../../types/common";
 
 Schema.Types.String.set("trim", true);
 
