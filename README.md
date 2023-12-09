@@ -1,1 +1,3 @@
-# express-ts-api
+# ExpressJS Template
+
+Template for ExpressJS API.
