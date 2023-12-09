@@ -1,22 +1,16 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import user from "./features/user/user-router";
 import article from "./features/article/article-router";
-import JsonResponse from "./utils/json-response";
+import { HttpStatusCode } from "./utils/http-status-code";
+import { AppError } from "./utils/app-error";
 
 const router = express.Router();
 
 router.use("/api/user", user);
 router.use("/api/articles", article);
 
-router.all("*", (req, res) => {
-  const body = new JsonResponse({
-    code: 404,
-    message: "Path not found",
-    data: undefined,
-    errors: ["Path not found"],
-  });
-
-  res.status(404).json(body);
+router.all("*", (req: Request, res: Response, next: NextFunction) => {
+  next(new AppError(HttpStatusCode.NotFound, "Path not found"));
 });
 
 export default router;

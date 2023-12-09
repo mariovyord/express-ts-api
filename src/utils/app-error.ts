@@ -1,7 +1,9 @@
-export class AppError extends Error {
-  statusCode: number;
+import { HttpStatusCode } from "./http-status-code";
 
-  constructor(statusCode: number, message: string) {
+export class AppError extends Error {
+  statusCode: HttpStatusCode;
+
+  constructor(statusCode: HttpStatusCode, message: string) {
     super(message);
     this.statusCode = statusCode;
   }
