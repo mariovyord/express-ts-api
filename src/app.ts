@@ -6,6 +6,7 @@ import router from "./root-router";
 import path from "path";
 import handleErrors from "./middleware/error-middleware";
 import loggerMiddleware from "./middleware/logger-middleware";
+import { AppError } from "./utils/app-error";
 
 /**
  * The ExpressJS app
@@ -41,5 +42,20 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(router);
 app.use(loggerMiddleware());
 app.use(handleErrors());
+
+// Uncaught exception and SIGTERM handling
+process.on("uncaughtException", (err: Error | AppError) => {
+  console.error("Uncaught Exception:", err);
+  // Perform necessary cleanup or logging
+  if (!("isOperational" in err) || err.isOperational === false) {
+    process.exit(1);
+  }
+});
+
+process.on("SIGTERM", () => {
+  console.log("Received SIGTERM signal");
+  // Perform cleanup tasks
+  process.exit(0); // Exit with success status code (0)
+});
 
 export default app;

@@ -14,7 +14,7 @@ export const validateBody =
         .map((details) => details.message)
         .join(", ");
 
-      return next(new AppError(HttpStatusCode.BadRequest, errorMessage));
+      return next(new AppError(HttpStatusCode.BAD_REQUEST, errorMessage));
     }
 
     Object.assign(req, value);

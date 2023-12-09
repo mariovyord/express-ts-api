@@ -23,7 +23,7 @@ export const getAll =
 
       return res.json(body);
     } catch (err) {
-      next(new AppError(HttpStatusCode.NotFound, "Articles not found"));
+      next(new AppError(HttpStatusCode.NOT_FOUND, "Articles not found"));
     }
   };
 
@@ -46,7 +46,7 @@ export const getOne =
 
       return res.json(body);
     } catch (err) {
-      next(new AppError(HttpStatusCode.NotFound, "Article not found"));
+      next(new AppError(HttpStatusCode.NOT_FOUND, "Article not found"));
     }
   };
 
@@ -65,9 +65,11 @@ export const create =
         data: result,
       });
 
-      return res.status(HttpStatusCode.Created).json(body);
+      return res.status(HttpStatusCode.CREATED).json(body);
     } catch (err) {
-      next(new AppError(HttpStatusCode.BadRequest, "Failed to create article"));
+      next(
+        new AppError(HttpStatusCode.BAD_REQUEST, "Failed to create article")
+      );
     }
   };
 
@@ -85,7 +87,9 @@ export const patch =
 
       return res.json(body);
     } catch (err) {
-      next(new AppError(HttpStatusCode.BadRequest, "Failed to update article"));
+      next(
+        new AppError(HttpStatusCode.BAD_REQUEST, "Failed to update article")
+      );
     }
   };
 
@@ -105,6 +109,8 @@ export const remove =
 
       return res.status(202).json(body);
     } catch (err) {
-      next(new AppError(HttpStatusCode.BadRequest, "Failed to delete article"));
+      next(
+        new AppError(HttpStatusCode.BAD_REQUEST, "Failed to delete article")
+      );
     }
   };

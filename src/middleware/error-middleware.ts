@@ -10,13 +10,13 @@ const authCookie = "jwt";
 const errorMiddleware =
   () => (err: AppError, req: Request, res: Response, next: NextFunction) => {
     const {
-      statusCode = HttpStatusCode.InternalServerError,
+      statusCode = HttpStatusCode.INTERNAL_SERVER_ERROR,
       message = "Something went wrong",
     } = err;
 
     console.error(`Code: ${statusCode}; Error: ${message}`);
 
-    if (statusCode === HttpStatusCode.Forbidden) {
+    if (statusCode === HttpStatusCode.FORBIDDEN) {
       res.clearCookie(authCookie);
     }
 

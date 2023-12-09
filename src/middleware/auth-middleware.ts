@@ -9,7 +9,7 @@ const authenticateTokenMiddleware =
     const accessToken = req.cookies.jwt;
 
     if (!accessToken) {
-      next(new AppError(HttpStatusCode.Unauthorized, "Unauthorized"));
+      next(new AppError(HttpStatusCode.UNAUTHORIZED, "Unauthorized"));
     }
 
     jwt.verify(
@@ -17,7 +17,7 @@ const authenticateTokenMiddleware =
       process.env.JWT_SECRET || "",
       (err: jwt.VerifyErrors | null, user: any) => {
         if (err) {
-          next(new AppError(HttpStatusCode.Forbidden, "Forbidden"));
+          next(new AppError(HttpStatusCode.FORBIDDEN, "Forbidden"));
         } else {
           res.locals.user = user;
           next();

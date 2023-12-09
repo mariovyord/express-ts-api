@@ -31,7 +31,7 @@ export const signUp =
         .status(201)
         .json(body);
     } catch (err) {
-      next(new AppError(HttpStatusCode.BadRequest, "Sign up failed"));
+      next(new AppError(HttpStatusCode.BAD_REQUEST, "Sign up failed"));
     }
   };
 
@@ -53,7 +53,7 @@ export const signIn =
         .cookie(authCookieName, result.token, authCookieOptions)
         .json(body);
     } catch (err) {
-      next(new AppError(HttpStatusCode.Unauthorized, "Sign in failed"));
+      next(new AppError(HttpStatusCode.UNAUTHORIZED, "Sign in failed"));
     }
   };
 

@@ -10,7 +10,7 @@ router.use("/api/user", user);
 router.use("/api/articles", article);
 
 router.all("*", (req: Request, res: Response, next: NextFunction) => {
-  next(new AppError(HttpStatusCode.NotFound, "Path not found"));
+  next(new AppError(HttpStatusCode.NOT_FOUND, "Not found"));
 });
 
 export default router;
