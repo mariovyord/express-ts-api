@@ -6,8 +6,12 @@ import { AppError } from "./utils/app-error";
 
 const router = express.Router();
 
-router.use("/api/user", user);
-router.use("/api/articles", article);
+function getSubRoute(version: "v1" | "v2", subroute: string): string {
+  return `/api/${version}/${subroute}`;
+}
+
+router.use(getSubRoute("v1", "user"), user);
+router.use(getSubRoute("v1", "article"), article);
 
 router.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(HttpStatusCode.NOT_FOUND, "Not found"));
