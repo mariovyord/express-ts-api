@@ -9,7 +9,7 @@ class JsonResponse {
   code: number;
   message: string;
   data: any | null;
-  errors: string[] | null;
+  errors: string[] | string | null;
 
   constructor({ code, message, data, errors }: IJsonResponse) {
     this.code = code;

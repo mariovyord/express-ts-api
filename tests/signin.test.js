@@ -3,7 +3,7 @@ const app = require("../src/app");
 const mongoose = require("mongoose");
 const { testConnectionString } = require("./test.constants");
 
-const url = "/api/auth/signin";
+const url = "/api/user/signin";
 
 describe("Test /signin", () => {
   beforeAll(async () => {
@@ -15,7 +15,7 @@ describe("Test /signin", () => {
       .then(async () => {
         // signup a user
         return await supertest(app)
-          .post("/api/auth/signup")
+          .post("/api/user/signup")
           .set("Content-Type", "application/json")
           .send({
             username: "user",

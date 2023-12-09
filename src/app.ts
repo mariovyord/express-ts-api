@@ -4,8 +4,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import router from "./root-router";
 import path from "path";
-import handleErrors from "./middleware/error.middleware";
-import loggerMiddleware from "./middleware/logger.middleware";
+import handleErrors from "./middleware/error-middleware";
+import loggerMiddleware from "./middleware/logger-middleware";
 
 /**
  * The ExpressJS app

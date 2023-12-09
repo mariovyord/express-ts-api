@@ -1,5 +1,5 @@
 import app from "./app";
-import db from "./database/db-connect";
+import db from "./config/db";
 
 const port = process.env.PORT || 5000;
 const dbConnectionString =

@@ -3,9 +3,9 @@ const supertest = require("supertest");
 const app = require("../src/app");
 const { testConnectionString } = require("./test.constants");
 
-const url = "/api/auth/signup";
+const url = "/api/user/signup";
 
-describe("Test /api/auth/signup", () => {
+describe("Test /api/user/signup", () => {
   beforeAll(async () => {
     await mongoose.connect(testConnectionString, {
       useNewUrlParser: true,

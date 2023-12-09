@@ -1,6 +1,6 @@
 import express from "express";
 import * as articleController from "./article-handlers";
-import authenticateToken from "../../middleware/auth.middleware";
+import authenticateToken from "../../middleware/auth-middleware";
 
 const router = express.Router();
 

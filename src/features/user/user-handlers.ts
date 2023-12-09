@@ -1,6 +1,6 @@
 import mapErrors from "../../utils/map-errors";
 import JsonResponse from "../../utils/json-response";
-import authService from "./auth-service";
+import authService from "./user-service";
 import PublicUser from "../../utils/public-user";
 import { Request, Response } from "express";
 

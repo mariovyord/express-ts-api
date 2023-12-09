@@ -1,11 +1,11 @@
 import express from "express";
-import auth from "./features/auth/auth-router";
+import user from "./features/user/user-router";
 import article from "./features/article/article-router";
 import JsonResponse from "./utils/json-response";
 
 const router = express.Router();
 
-router.use("/api/auth", auth);
+router.use("/api/user", user);
 router.use("/api/articles", article);
 
 router.all("*", (req, res) => {
