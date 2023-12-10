@@ -3,25 +3,35 @@ import JsonResponse from "../utils/json-response";
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app-error";
 import { HttpStatusCode } from "../utils/http-status-code";
+import config from "../config/config";
 
 const authenticateTokenMiddleware =
   () => (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies.jwt;
 
     if (!accessToken) {
-      next(new AppError(HttpStatusCode.UNAUTHORIZED, "Unauthorized"));
+      return next(new AppError(HttpStatusCode.UNAUTHORIZED, "Unauthorized"));
+    }
+
+    if (!config.JWT_SECRET) {
+      return next(
+        new AppError(
+          HttpStatusCode.INTERNAL_SERVER_ERROR,
+          "Something went wrong"
+        )
+      );
     }
 
     jwt.verify(
       accessToken,
-      process.env.JWT_SECRET || "",
+      config.JWT_SECRET,
       (err: jwt.VerifyErrors | null, user: any) => {
         if (err) {
-          next(new AppError(HttpStatusCode.FORBIDDEN, "Forbidden"));
-        } else {
-          res.locals.user = user;
-          next();
+          return next(new AppError(HttpStatusCode.FORBIDDEN, "Forbidden"));
         }
+
+        res.locals.user = user;
+        next();
       }
     );
   };

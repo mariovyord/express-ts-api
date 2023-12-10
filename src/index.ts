@@ -1,9 +1,10 @@
 import app from "./app";
 import db from "./config/db";
+import config from "./config/config";
 
-const port = process.env.PORT || 5000;
+const port = config.PORT || 5000;
 const dbConnectionString =
-  process.env.CONNECTION_STRING || "mongodb://localhost:27017/express-template";
+  config.CONNECTION_STRING || "mongodb://localhost:27017/express-template";
 
 (async function () {
   await db(dbConnectionString);

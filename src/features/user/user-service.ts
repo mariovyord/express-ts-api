@@ -1,6 +1,7 @@
 import User from "./user-schema";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import config from "../../config/config";
 
 interface SignUpUserData {
   username: string;
@@ -51,7 +52,7 @@ async function signIn(username: string, password: string) {
 }
 
 async function createToken(id: ObjectId) {
-  return jwt.sign({ id: id.toString() }, `${process.env.JWT_SECRET}`, {
+  return jwt.sign({ id: id.toString() }, `${config.JWT_SECRET}`, {
     expiresIn: "7d",
   });
 }
