@@ -1,5 +1,5 @@
-const supertest = require("supertest");
-const app = require("../src/app");
+import supertest from "supertest";
+import app from "../src/app";
 
 describe("Test the root path", () => {
   test("Wrong url returns 404 and a message", async () => {

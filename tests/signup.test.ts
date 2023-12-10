@@ -1,16 +1,13 @@
-const mongoose = require("mongoose");
-const supertest = require("supertest");
-const app = require("../src/app");
-const { testConnectionString } = require("./test.constants");
+import mongoose from "mongoose";
+import supertest from "supertest";
+import app from "../src/app";
+import { testConnectionString } from "./test-utils";
 
 const url = "/api/user/signup";
 
 describe("Test /api/user/signup", () => {
   beforeAll(async () => {
-    await mongoose.connect(testConnectionString, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(testConnectionString);
   });
 
   afterAll((done) => {

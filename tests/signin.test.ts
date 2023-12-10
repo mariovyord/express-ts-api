@@ -1,29 +1,24 @@
-const supertest = require("supertest");
-const app = require("../src/app");
-const mongoose = require("mongoose");
-const { testConnectionString } = require("./test.constants");
+import supertest from "supertest";
+import app from "../src/app";
+import mongoose from "mongoose";
+import { testConnectionString } from "./test-utils";
 
 const url = "/api/user/signin";
 
 describe("Test /signin", () => {
   beforeAll(async () => {
-    return mongoose
-      .connect(testConnectionString, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      })
-      .then(async () => {
-        // signup a user
-        return await supertest(app)
-          .post("/api/user/signup")
-          .set("Content-Type", "application/json")
-          .send({
-            username: "user",
-            firstName: "User",
-            lastName: "Useroff",
-            password: "123123",
-          });
-      });
+    return mongoose.connect(testConnectionString).then(async () => {
+      // signup a user
+      return await supertest(app)
+        .post("/api/user/signup")
+        .set("Content-Type", "application/json")
+        .send({
+          username: "user",
+          firstName: "User",
+          lastName: "Useroff",
+          password: "123123",
+        });
+    });
   });
   afterAll((done) => {
     mongoose.connection.dropDatabase().then(() => {
