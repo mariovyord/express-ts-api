@@ -1,10 +1,22 @@
-import { Request, Response, NextFunction } from "express";
+import winston from "winston";
+import morgan from "morgan";
 
-const loggerMiddleware =
-  () => (req: Request, res: Response, next: NextFunction) => {
-    console.log(">>>", req.method, req.url);
+const { combine, timestamp, json } = winston.format;
 
-    next();
-  };
+const logger = winston.createLogger({
+  level: "http",
+  format: combine(
+    timestamp({
+      format: "YYYY-MM-DD hh:mm:ss.SSS A",
+    }),
+    json()
+  ),
+  transports: [new winston.transports.Console()],
+});
+
+const loggerMiddleware = () =>
+  morgan(":method :url :status :res[content-length] - :response-time ms", {
+    stream: { write: (msg) => logger.http(msg.trim()) },
+  });
 
 export default loggerMiddleware;

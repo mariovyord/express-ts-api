@@ -11,7 +11,7 @@ function getSubRoute(version: "v1" | "v2", subroute: string): string {
 }
 
 router.use(getSubRoute("v1", "user"), user);
-router.use(getSubRoute("v1", "article"), article);
+router.use(getSubRoute("v1", "articles"), article);
 
 router.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(HttpStatusCode.NOT_FOUND, "Not found"));

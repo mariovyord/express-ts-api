@@ -39,8 +39,8 @@ app.use(express.static(path.join(__dirname, "public")));
 /**
  * Routes and global error handling
  */
-app.use(router);
 app.use(loggerMiddleware());
+app.use(router);
 app.use(handleErrors());
 
 // Uncaught exception and SIGTERM handling
