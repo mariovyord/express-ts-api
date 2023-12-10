@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import supertest from "supertest";
-import app from "../src/app";
-import { testConnectionString } from "./test-utils";
+import app from "../../src/app";
+import { testConnectionString } from "../test-utils";
 
-const url = "/api/user/signup";
+const url = "/api/v1/user/signup";
 
-describe("Test /api/user/signup", () => {
+describe(`${url}`, () => {
   beforeAll(async () => {
     await mongoose.connect(testConnectionString);
   });
@@ -17,14 +17,15 @@ describe("Test /api/user/signup", () => {
     });
   });
 
-  test("/signup returns 4xx code and errors if body is empty", async () => {
+  test("should return 4xx code when request body is empty", async () => {
     const test = await supertest(app).post(url).expect(400);
 
-    expect(test.body.message).toBe("Sign up failed");
-    expect(test.body.errors).not.toHaveLength(0);
+    expect(test.body.message).toBe('"username" is required');
+    expect(test.body.data).toBe(null);
+    expect(test.body.code).toBe(400);
   });
 
-  test("successful signup with valid user data", async () => {
+  test("should sign up successfully when user data is valid", async () => {
     const test = await supertest(app)
       .post(url)
       .set("Content-Type", "application/json")
@@ -34,14 +35,14 @@ describe("Test /api/user/signup", () => {
         lastName: "Johnson",
         password: "123123",
       })
-      .expect(200);
+      .expect(201);
 
     expect(test.body.message).toBe("Sign up successful");
-    expect(test.body).toHaveProperty("data");
-    expect(test.body).not.toHaveProperty("errors");
+    expect(test.body.data).toBeTruthy();
+    expect(test.body.code).toBe(201);
   });
 
-  test("signup with invalid password fails", async () => {
+  test("should fail to sign up when password is invalid", async () => {
     const test = await supertest(app)
       .post(url)
       .set("Content-Type", "application/json")
@@ -54,11 +55,11 @@ describe("Test /api/user/signup", () => {
       .expect(400);
 
     expect(test.body.message).toBe("Sign up failed");
-    expect(test.body).not.toHaveProperty("data");
-    expect(test.body.errors).not.toHaveLength(0);
+    expect(test.body.data).toBe(null);
+    expect(test.body.code).toBe(400);
   });
 
-  test("signup with invalid username fails", async () => {
+  test("should fail to sign up when username is invalid", async () => {
     const test = await supertest(app)
       .post(url)
       .set("Content-Type", "application/json")
@@ -70,12 +71,14 @@ describe("Test /api/user/signup", () => {
       })
       .expect(400);
 
-    expect(test.body.message).toBe("Sign up failed");
-    expect(test.body).not.toHaveProperty("data");
-    expect(test.body.errors).not.toHaveLength(0);
+    expect(test.body.message).toBe(
+      '"username" must only contain alpha-numeric characters'
+    );
+    expect(test.body.data).toBe(null);
+    expect(test.body.code).toBe(400);
   });
 
-  test("signup with existing username fails", async () => {
+  test("should fail to sign up when username is not unique", async () => {
     await supertest(app)
       .post(url)
       .set("Content-Type", "application/json")
@@ -98,7 +101,7 @@ describe("Test /api/user/signup", () => {
       .expect(400);
 
     expect(test.body.message).toBe("Sign up failed");
-    expect(test.body).not.toHaveProperty("data");
-    expect(test.body.errors).not.toHaveLength(0);
+    expect(test.body.data).toBe(null);
+    expect(test.body.code).toBe(400);
   });
 });

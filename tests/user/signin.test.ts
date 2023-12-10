@@ -1,16 +1,16 @@
 import supertest from "supertest";
-import app from "../src/app";
+import app from "../../src/app";
 import mongoose from "mongoose";
-import { testConnectionString } from "./test-utils";
+import { testConnectionString } from "../test-utils";
 
-const url = "/api/user/signin";
+const url = "/api/v1/user/signin";
 
-describe("Test /signin", () => {
+describe(`${url}`, () => {
   beforeAll(async () => {
     return mongoose.connect(testConnectionString).then(async () => {
       // signup a user
       return await supertest(app)
-        .post("/api/user/signup")
+        .post("/api/v1/user/signup")
         .set("Content-Type", "application/json")
         .send({
           username: "user",
@@ -27,15 +27,15 @@ describe("Test /signin", () => {
     });
   });
 
-  test("/signin returns 4xx code and errors if body is empty", async () => {
-    const test = await supertest(app).post(url).expect(401);
+  test("should return 4xx code when request body is empty", async () => {
+    const test = await supertest(app).post(url).expect(400);
 
-    expect(test.body.message).toBe("Sign in failed");
-    expect(test.body).not.toHaveProperty("data");
-    expect(test.body).toHaveProperty("errors");
+    expect(test.body.message).toBe('"username" is required');
+    expect(test.body.data).toBe(null);
+    expect(test.body.code).toBe(400);
   });
 
-  test("successful signin with existing user", async () => {
+  test("should signin with existing user when request body is valid", async () => {
     const test = await supertest(app)
       .post(url)
       .set("Content-Type", "application/json")
@@ -43,11 +43,11 @@ describe("Test /signin", () => {
       .expect(200);
 
     expect(test.body.message).toBe("Sign in successful");
-    expect(test.body).toHaveProperty("data");
-    expect(test.body).not.toHaveProperty("errors");
+    expect(test.body.data).toBeTruthy();
+    expect(test.body.code).toBe(200);
   });
 
-  test("wrong password for existing user", async () => {
+  test("should fail to sign in when password do not match", async () => {
     const test = await supertest(app)
       .post(url)
       .set("Content-Type", "application/json")
@@ -55,11 +55,11 @@ describe("Test /signin", () => {
       .expect(401);
 
     expect(test.body.message).toBe("Sign in failed");
-    expect(test.body).not.toHaveProperty("data");
-    expect(test.body).toHaveProperty("errors");
+    expect(test.body.data).toBe(null);
+    expect(test.body.code).toBe(401);
   });
 
-  test("wrong username", async () => {
+  test("should fail to sign in when username do not match", async () => {
     const test = await supertest(app)
       .post(url)
       .set("Content-Type", "application/json")
@@ -67,7 +67,7 @@ describe("Test /signin", () => {
       .expect(401);
 
     expect(test.body.message).toBe("Sign in failed");
-    expect(test.body).not.toHaveProperty("data");
-    expect(test.body).toHaveProperty("errors");
+    expect(test.body.data).toBe(null);
+    expect(test.body.code).toBe(401);
   });
 });

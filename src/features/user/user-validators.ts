@@ -9,5 +9,5 @@ export const userSignUpSchema = Joi.object().keys({
   username: Joi.string().min(3).max(30).alphanum().required(),
   password: Joi.string().min(3).max(30).required(),
   firstName: Joi.string().alphanum().required(),
-  lastname: Joi.string().alphanum().required(),
+  lastName: Joi.string().alphanum().required(),
 });
