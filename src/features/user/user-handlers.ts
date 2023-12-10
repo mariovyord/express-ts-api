@@ -18,16 +18,16 @@ export const signUp =
   () => async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userData = req.body;
-      const result = await authService.signUp(userData);
+      const [token, user] = await authService.signUp(userData);
 
       return res
-        .cookie(authCookieName, result.token, authCookieOptions)
+        .cookie(authCookieName, token, authCookieOptions)
         .status(HttpStatusCode.CREATED)
         .json(
           new JsonResponse({
             code: HttpStatusCode.CREATED,
             message: "Sign up successful",
-            data: new UserEntity(result.user),
+            data: user,
           })
         );
     } catch (err) {
@@ -39,16 +39,16 @@ export const signIn =
   () => async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userData = req.body;
-      const result = await authService.signIn(
+      const [token, user] = await authService.signIn(
         userData.username,
         userData.password
       );
 
-      return res.cookie(authCookieName, result.token, authCookieOptions).json(
+      return res.cookie(authCookieName, token, authCookieOptions).json(
         new JsonResponse({
           code: HttpStatusCode.OK,
           message: "Sign in successful",
-          data: new UserEntity(result.user),
+          data: user,
         })
       );
     } catch (err) {
