@@ -1,3 +1,3 @@
-# ExpressJS Template
+# Express API
 
-Template for ExpressJS API.
+Work in progress..
