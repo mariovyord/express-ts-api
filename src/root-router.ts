@@ -1,9 +1,9 @@
 import express, { Request, Response, NextFunction } from "express";
-import user from "./features/user/user-router";
-import article from "./features/article/article-router";
 import { HttpStatusCode } from "./utils/http-status-code";
 import { AppError } from "./utils/app-error";
 import JsonResponse from "./utils/json-response";
+import userModule from "./features/user";
+import articleModule from "./features/article";
 
 const router = express.Router();
 
@@ -22,8 +22,8 @@ function ping(req: Request, res: Response) {
 }
 
 router.get("/api/ping", ping);
-router.use(getSubRoute("v1", "user"), user);
-router.use(getSubRoute("v1", "articles"), article);
+router.use(getSubRoute("v1", "user"), userModule);
+router.use(getSubRoute("v1", "articles"), articleModule);
 
 router.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(HttpStatusCode.NOT_FOUND, "Not found"));

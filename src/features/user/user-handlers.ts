@@ -20,16 +20,16 @@ export const signUp =
       const userData = req.body;
       const result = await authService.signUp(userData);
 
-      const body = new JsonResponse({
-        code: 201,
-        message: "Sign up successful",
-        data: new UserEntity(result.user),
-      });
-
       return res
         .cookie(authCookieName, result.token, authCookieOptions)
-        .status(201)
-        .json(body);
+        .status(HttpStatusCode.CREATED)
+        .json(
+          new JsonResponse({
+            code: HttpStatusCode.CREATED,
+            message: "Sign up successful",
+            data: new UserEntity(result.user),
+          })
+        );
     } catch (err) {
       next(new AppError(HttpStatusCode.BAD_REQUEST, "Sign up failed"));
     }
@@ -44,25 +44,24 @@ export const signIn =
         userData.password
       );
 
-      const body = new JsonResponse({
-        code: 200,
-        message: "Sign in successful",
-        data: new UserEntity(result.user),
-      });
-      return res
-        .cookie(authCookieName, result.token, authCookieOptions)
-        .json(body);
+      return res.cookie(authCookieName, result.token, authCookieOptions).json(
+        new JsonResponse({
+          code: HttpStatusCode.OK,
+          message: "Sign in successful",
+          data: new UserEntity(result.user),
+        })
+      );
     } catch (err) {
       next(new AppError(HttpStatusCode.UNAUTHORIZED, "Sign in failed"));
     }
   };
 
 export const signOut = () => async (req: Request, res: Response) => {
-  const body = new JsonResponse({
-    code: 200,
-    message: "Sign out successful",
-    data: null,
-  });
-
-  return res.clearCookie(authCookieName).json(body);
+  return res.clearCookie(authCookieName).json(
+    new JsonResponse({
+      code: HttpStatusCode.OK,
+      message: "Sign out successful",
+      data: null,
+    })
+  );
 };

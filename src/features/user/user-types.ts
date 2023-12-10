@@ -9,6 +9,13 @@ export interface IUser {
   comparePassword: (password: string) => boolean;
 }
 
+export interface SignUpUserData {
+  username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
 /**
  * Represents a Public User with limited information.
  */

@@ -2,13 +2,7 @@ import User from "./user-schema";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import config from "../../config/config";
-
-interface SignUpUserData {
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-}
+import { SignUpUserData } from "./user-types";
 
 async function signUp(userData: SignUpUserData) {
   const existing = await User.findOne({
@@ -37,7 +31,7 @@ async function signIn(username: string, password: string) {
     throw new Error("Incorrect username or password");
   }
 
-  const match = await user.comparePassword(password);
+  const match = user.comparePassword(password);
 
   if (!match) {
     throw new Error("Incorrect username or password");

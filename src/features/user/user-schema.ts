@@ -9,40 +9,16 @@ const userSchema = new Schema<IUser>(
   {
     username: {
       type: String,
-      required: [true, "Username is required"],
-      minlength: [3, "Minimum length is 3 characters"],
-      maxlength: [280, "Maximum length is 280 characters"],
       unique: true,
-      validate: {
-        validator: noBlacklistedChars,
-        message: "Username should not contain whitespace or special symbols",
-      },
     },
     firstName: {
       type: String,
-      required: [true, "First name is required"],
-      minlength: [3, "Minimum length is 3 characters"],
-      maxlength: [280, "Maximum length is 280 characters"],
-      validate: {
-        validator: noBlacklistedChars,
-        message: "First name should not contain whitespace or special symbols",
-      },
     },
     lastName: {
       type: String,
-      required: [true, "Last name is required"],
-      minlength: [3, "Minimum length is 3 characters"],
-      maxlength: [280, "Maximum length is 280 characters"],
-      validate: {
-        validator: noBlacklistedChars,
-        message: "Last name should not contain whitespace or special symbols",
-      },
     },
     password: {
       type: String,
-      required: [true, "Password name is required"],
-      minlength: 6,
-      maxlength: 60,
     },
   },
   { timestamps: true }
@@ -67,7 +43,6 @@ userSchema.pre("save", async function (next) {
       );
 
     this.password = await bcrypt.hash(this.password, 10);
-    console.log("Hashing new password");
   }
   next();
 });
