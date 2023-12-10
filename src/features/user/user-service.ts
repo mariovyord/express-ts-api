@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { ObjectId } from "mongodb";
 import config from "../../config/config";
 import { SignUpUserData, UserEntity } from "./user-types";
 import * as userRepository from "./user-repository";

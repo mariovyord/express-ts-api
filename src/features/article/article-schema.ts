@@ -1,20 +1,17 @@
 import mongoose, { Schema, Types, model } from "mongoose";
+import { IArticle } from "./article-types";
 
 mongoose.Schema.Types.String.set("trim", true);
 
-const articleSchema = new Schema(
+const articleSchema = new Schema<IArticle>(
   {
     title: {
       type: String,
       required: [true, `Title is required`],
-      minlength: [3, "Minimum length is 3 characters"],
-      maxlength: [280, "Maximum length is 280 characters"],
     },
     content: {
       type: String,
       required: [true, `Content is required`],
-      minlength: [3, "Minimum length is 3 characters"],
-      maxlength: [2000, "Maximum length is 2000 characters"],
     },
     owner: {
       type: Types.ObjectId,
