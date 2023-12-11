@@ -8,6 +8,10 @@ export interface IArticle {
   owner: ObjectId | IUser;
 }
 
+export type ICreateArticleData = Pick<IArticle, "title" | "content">;
+
+export type IPatchArticleData = Pick<IArticle, "title" | "content">;
+
 /**
  * Represents a Public Article with limited information.
  */
