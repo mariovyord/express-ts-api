@@ -7,6 +7,7 @@ const url = "/api/v1/user/signin";
 
 describe(`${url}`, () => {
   beforeAll(async () => {
+    require("dotenv").config();
     return mongoose.connect(testConnectionString).then(async () => {
       // signup a user
       return await supertest(app)

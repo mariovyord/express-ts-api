@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
-import JsonResponse from "../utils/json-response";
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app-error";
 import { HttpStatusCode } from "../utils/http-status-code";
-import config from "../config/config";
+import getConfig from "../config/get-config";
 
 const authenticateTokenMiddleware =
   () => (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies.jwt;
+    const config = getConfig();
 
     if (!accessToken) {
       return next(new AppError(HttpStatusCode.UNAUTHORIZED, "Unauthorized"));

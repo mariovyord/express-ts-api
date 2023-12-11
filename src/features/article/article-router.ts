@@ -9,8 +9,8 @@ const router = express.Router();
 router.get("/", articleController.getAll());
 router.post(
   "/",
-  validateBody(articleCreateSchema),
   authenticateToken(),
+  validateBody(articleCreateSchema),
   articleController.create()
 );
 router.get("/:id", articleController.getOne());

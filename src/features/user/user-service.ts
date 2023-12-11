@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import config from "../../config/config";
+import getConfig from "../../config/get-config";
 import { SignUpUserData, UserEntity } from "./user-types";
 import * as userRepository from "./user-repository";
 
@@ -32,6 +32,12 @@ async function signIn(
 }
 
 async function createToken(id: string) {
+  const config = getConfig();
+
+  if (!config.JWT_SECRET) {
+    throw new Error("Internal server error");
+  }
+
   return jwt.sign({ id }, `${config.JWT_SECRET}`, {
     expiresIn: "7d",
   });

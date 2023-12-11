@@ -6,10 +6,9 @@ import { AppError } from "../utils/app-error";
 
 export const validateBody =
   (schema: Joi.Schema) => (req: Request, res: Response, next: NextFunction) => {
-    const { value, error } = Joi.compile(schema).validate(req.body);
+    const { error } = Joi.compile(schema).validate(req.body);
 
     if (error) {
-      console.log(error);
       const errorMessage = error.details
         .map((details) => details.message)
         .join(", ");
@@ -17,6 +16,5 @@ export const validateBody =
       return next(new AppError(HttpStatusCode.BAD_REQUEST, errorMessage));
     }
 
-    Object.assign(req, value);
     return next();
   };

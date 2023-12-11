@@ -1,5 +1,4 @@
 import express from "express";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import router from "./root-router";
@@ -7,7 +6,7 @@ import path from "path";
 import handleErrors from "./middleware/error-middleware";
 import loggerMiddleware from "./middleware/logger-middleware";
 import { AppError } from "./utils/app-error";
-import config from "./config/config";
+import getConfig from "./config/get-config";
 
 /**
  * The ExpressJS app
@@ -15,14 +14,11 @@ import config from "./config/config";
 const app = express();
 
 /**
- * Load enviroment variables
- */
-dotenv.config();
-
-/**
  * Middlewares
  */
 app.enable("trust proxy");
+
+const config = getConfig();
 
 app.use(
   cors({
