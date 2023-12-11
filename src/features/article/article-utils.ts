@@ -2,13 +2,8 @@ import { SortOrder } from "mongoose";
 import { GetAllArticlesQuery } from "./article-types";
 
 export interface IParsedQuery {
-  find: { [key: string]: string };
-  sort:
-    | string
-    | { [key: string]: SortOrder | { $meta: any } }
-    | [string, SortOrder][]
-    | null
-    | undefined;
+  find: { [key: string]: string | string[] };
+  sort: { [key: string]: SortOrder | { $meta: any } };
   pagination: {
     limit: number;
     skip: number;
@@ -20,7 +15,7 @@ export interface IParsedQuery {
 }
 
 export function parseQuery(query: GetAllArticlesQuery): IParsedQuery {
-  const parsedQuery = {
+  const parsedQuery: IParsedQuery = {
     find: {},
     sort: {},
     pagination: {
@@ -40,7 +35,8 @@ export function parseQuery(query: GetAllArticlesQuery): IParsedQuery {
       if (!parsedQuery.find[prop]) {
         parsedQuery.find[prop] = [];
       }
-      parsedQuery.find[prop].push(value);
+
+      (parsedQuery.find[prop] as string[]).push(value);
     });
   } else if (typeof query.where === "string") {
     const [prop, value] = query.where.split("=");
@@ -51,13 +47,13 @@ export function parseQuery(query: GetAllArticlesQuery): IParsedQuery {
   if (Array.isArray(query.sortBy)) {
     query.sortBy.forEach((x) => {
       const [sortProp, order] = x.split(" ");
-      parsedQuery.sort[sortProp] = order;
+      parsedQuery.sort[sortProp] = order as SortOrder;
     });
   } else if (typeof query.sortBy === "string") {
     const [sortProp, order] = query.sortBy.split(" ");
-    parsedQuery.sort[sortProp] = order;
+    parsedQuery.sort[sortProp] = order as SortOrder;
   } else {
-    parsedQuery.sort.createdAt = "asc";
+    parsedQuery.sort = { createdAt: "asc" };
   }
 
   if (query.page && query.pageSize) {
@@ -67,7 +63,6 @@ export function parseQuery(query: GetAllArticlesQuery): IParsedQuery {
   }
 
   // Populate properties
-
   if (Array.isArray(query.populate)) {
     parsedQuery.populate += query.populate.join(" ");
   } else if (typeof query.populate === "string") {

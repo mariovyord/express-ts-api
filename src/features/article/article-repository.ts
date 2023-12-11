@@ -16,17 +16,21 @@ export async function findArticlesByQuery(
     .populate(parsedQuery.populate, parsedQuery.limitPopulate)
     .select(parsedQuery.select);
 
-  // Return count if specified
-  if (articles && parsedQuery.count) {
-    if (parsedQuery.find) return articles.count();
-    return articles.estimatedDocumentCount();
-  }
-
   if (!articles) {
     return [];
   }
 
   return articles.map((x) => new ArticleEntity(x));
+}
+
+export async function countDocumentsByQuery(
+  parsedQuery: IParsedQuery
+): Promise<number> {
+  if (parsedQuery.find) {
+    return Article.find(parsedQuery.find).countDocuments();
+  }
+
+  return Article.find().estimatedDocumentCount();
 }
 
 export async function findArticleById(

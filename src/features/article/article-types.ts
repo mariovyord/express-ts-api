@@ -7,6 +7,8 @@ export interface IArticle {
   content: string;
   owner: ObjectId | IUser;
   ownerId: string;
+  estimatedDocumentCount: () => number;
+  count: () => number;
 }
 
 export type ICreateArticleData = Pick<IArticle, "title" | "content">;
