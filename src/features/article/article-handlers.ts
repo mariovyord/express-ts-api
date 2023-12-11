@@ -15,14 +15,10 @@ export function getAll() {
       const query = req.query;
       const result = await articleService.getAll(query);
 
-      if (result.length === 0) {
-        throw new Error("Articles not found");
-      }
-
       return res.json(
         new JsonResponse({
           code: HttpStatusCode.OK,
-          message: `List of Articles`,
+          message: `Articles`,
           data: result,
         })
       );

@@ -9,8 +9,13 @@ import { parseQuery } from "./article-utils";
 
 export async function getAll(
   query: GetAllArticlesQuery
-): Promise<ArticleEntity[]> {
+): Promise<ArticleEntity[] | number> {
   const parsedQuery = parseQuery(query);
+
+  if (parsedQuery.count) {
+    return articleRepository.countDocumentsByQuery(parsedQuery);
+  }
+
   return articleRepository.findArticlesByQuery(parsedQuery);
 }
 
