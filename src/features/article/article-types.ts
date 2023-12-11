@@ -36,3 +36,13 @@ export class ArticleEntity {
     }
   }
 }
+
+export interface GetAllArticlesQuery {
+  where?: string | string[];
+  sortBy?: string | string[];
+  page?: string;
+  pageSize?: string;
+  populate?: string | string[];
+  select?: string | string[];
+  count?: string;
+}

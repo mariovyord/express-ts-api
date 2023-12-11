@@ -4,14 +4,23 @@ import {
   ICreateArticleData,
   IPatchArticleData,
 } from "./article-types";
+import { IParsedQuery } from "./article-utils";
 
 export async function findArticlesByQuery(
-  parsedQuery: any
+  parsedQuery: IParsedQuery
 ): Promise<ArticleEntity[]> {
-  const articles = await Article.find(parsedQuery.options)
+  const articles = await Article.find(parsedQuery.find)
+    .sort(parsedQuery.sort)
     .limit(parsedQuery.pagination.limit)
     .skip(parsedQuery.pagination.skip)
-    .populate(parsedQuery.populate, parsedQuery.limitPopulate);
+    .populate(parsedQuery.populate, parsedQuery.limitPopulate)
+    .select(parsedQuery.select);
+
+  // Return count if specified
+  if (articles && parsedQuery.count) {
+    if (parsedQuery.find) return articles.count();
+    return articles.estimatedDocumentCount();
+  }
 
   if (!articles) {
     return [];

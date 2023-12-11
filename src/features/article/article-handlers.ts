@@ -3,9 +3,14 @@ import * as articleService from "./article-service";
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
+import { GetAllArticlesQuery } from "./article-types";
 
 export function getAll() {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (
+    req: Request<{}, {}, {}, GetAllArticlesQuery>,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const query = req.query;
       const result = await articleService.getAll(query);

@@ -1,40 +1,16 @@
 import * as articleRepository from "./article-repository";
 import {
   ArticleEntity,
+  GetAllArticlesQuery,
   ICreateArticleData,
   IPatchArticleData,
 } from "./article-types";
+import { parseQuery } from "./article-utils";
 
-export async function getAll(query: any): Promise<ArticleEntity[]> {
-  const parsedQuery = {};
-
-  // Pagination
-  const pagination = {
-    limit: 10,
-    skip: 0,
-  };
-
-  if (query.page && query.pageSize) {
-    let limit = parseInt(query.pageSize);
-    if (limit > 30) limit = 30;
-    pagination.limit = limit;
-    pagination.skip = Math.max(0, parseInt(query.page) - 1) * pagination.limit;
-  }
-
-  // Populate properties
-  let populate = "";
-  let limitPopulate = "";
-
-  if (Array.isArray(query.populate)) {
-    populate += query.populate.join(" ");
-  } else if (typeof query.populate === "string") {
-    populate += query.populate;
-  }
-
-  if (query.populate && query.populate.includes("owner")) {
-    limitPopulate += "username firstName lastName";
-  }
-
+export async function getAll(
+  query: GetAllArticlesQuery
+): Promise<ArticleEntity[]> {
+  const parsedQuery = parseQuery(query);
   return articleRepository.findArticlesByQuery(parsedQuery);
 }
 
