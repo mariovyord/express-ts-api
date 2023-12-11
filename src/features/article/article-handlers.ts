@@ -18,7 +18,7 @@ export function getAll() {
       return res.json(
         new JsonResponse({
           code: HttpStatusCode.OK,
-          message: `Articles`,
+          message: "Articles",
           data: result,
         })
       );
@@ -42,7 +42,7 @@ export function getOne() {
       return res.json(
         new JsonResponse({
           code: HttpStatusCode.OK,
-          message: `Details of article`,
+          message: "Details of article",
           data: result,
         })
       );
@@ -65,7 +65,7 @@ export function create() {
       return res.status(HttpStatusCode.CREATED).json(
         new JsonResponse({
           code: HttpStatusCode.CREATED,
-          message: `Created item in articles collection`,
+          message: "Created item in articles collection",
           data: result,
         })
       );
@@ -87,7 +87,7 @@ export function patch() {
       return res.json(
         new JsonResponse({
           code: HttpStatusCode.OK,
-          message: `Updated item in articles collection`,
+          message: "Updated item in articles collection",
           data: result,
         })
       );
