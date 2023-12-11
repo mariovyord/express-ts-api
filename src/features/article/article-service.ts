@@ -1,7 +1,13 @@
-import Article from "./article-schema";
+import * as articleRepository from "./article-repository";
+import {
+  ArticleEntity,
+  ICreateArticleData,
+  IPatchArticleData,
+} from "./article-types";
 
-export const getAll = async (query: any) => {
-  const options = {};
+export async function getAll(query: any): Promise<ArticleEntity[]> {
+  const parsedQuery = {};
+
   // Pagination
   const pagination = {
     limit: 10,
@@ -29,13 +35,13 @@ export const getAll = async (query: any) => {
     limitPopulate += "username firstName lastName";
   }
 
-  return Article.find(options)
-    .limit(pagination.limit)
-    .skip(pagination.skip)
-    .populate(populate, limitPopulate);
-};
+  return articleRepository.findArticlesByQuery(parsedQuery);
+}
 
-export const getOne = async (id: string, query: any) => {
+export async function getOne(
+  id: string,
+  query: any
+): Promise<ArticleEntity | null> {
   let populate = "";
   let limitPopulate = "";
 
@@ -47,38 +53,26 @@ export const getOne = async (id: string, query: any) => {
     }
   }
 
-  return Article.findById(id).populate(populate, limitPopulate);
-};
+  return articleRepository.findArticleById(id);
+}
 
-export const create = async (data: any) => {
-  const result = new Article(data);
-  await result.save();
-  return result;
-};
+export async function create(data: ICreateArticleData): Promise<ArticleEntity> {
+  return articleRepository.createArticle(data);
+}
 
-export const update = async (id: string, userId: string, data: any) => {
-  const article = await Article.findById(id);
+export async function update(
+  id: string,
+  userId: string,
+  data: IPatchArticleData
+): Promise<ArticleEntity> {
+  return articleRepository.findAndUpdateArticleById(id, userId, data);
+}
 
-  if (article === null) throw new Error();
-  if (article.owner.toString() !== userId)
-    throw new Error("Only owners can update article");
+export async function remove(id: string, userId: string): Promise<void> {
+  const item = await articleRepository.findArticleById(id);
 
-  for (const key of Object.keys(data)) {
-    //@ts-ignore
-    article[key] = data[key];
-  }
-
-  await article.save();
-
-  return article;
-};
-
-export const remove = async (id: string, userId: string) => {
-  const item = await Article.findById(id);
   if (!item) throw new Error("Article does not exist");
+  if (item.ownerId !== userId) throw new Error("Only owners can delete items");
 
-  if (item.owner.toString() !== userId)
-    throw new Error("Only owners can delete items");
-
-  await Article.findOneAndDelete({ _id: id });
-};
+  await articleRepository.deleteArticleById(id);
+}

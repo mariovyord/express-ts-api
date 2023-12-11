@@ -1,17 +1,16 @@
-import mapErrors from "../../utils/map-errors";
 import JsonResponse from "../../utils/json-response";
 import * as articleService from "./article-service";
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
 
-export const getAll =
-  () => async (req: Request, res: Response, next: NextFunction) => {
+export function getAll() {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const query = req.query;
       const result = await articleService.getAll(query);
 
-      if (!result) {
+      if (result.length === 0) {
         throw new Error("Articles not found");
       }
 
@@ -26,9 +25,10 @@ export const getAll =
       next(new AppError(HttpStatusCode.NOT_FOUND, "Articles not found"));
     }
   };
+}
 
-export const getOne =
-  () => async (req: Request, res: Response, next: NextFunction) => {
+export function getOne() {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id;
       const query = req.query;
@@ -49,9 +49,10 @@ export const getOne =
       next(new AppError(HttpStatusCode.NOT_FOUND, "Article not found"));
     }
   };
+}
 
-export const create =
-  () => async (req: Request, res: Response, next: NextFunction) => {
+export function create() {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = req.body;
       const userId = res.locals.user.id;
@@ -73,9 +74,10 @@ export const create =
       );
     }
   };
+}
 
-export const patch =
-  () => async (req: Request, res: Response, next: NextFunction) => {
+export function patch() {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id;
       const userId = res.locals.user.id;
@@ -94,9 +96,10 @@ export const patch =
       );
     }
   };
+}
 
-export const remove =
-  () => async (req: Request, res: Response, next: NextFunction) => {
+export function remove() {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id;
       const userId = res.locals.user.id;
@@ -116,3 +119,4 @@ export const remove =
       );
     }
   };
+}

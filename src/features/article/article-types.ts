@@ -6,6 +6,7 @@ export interface IArticle {
   title: string;
   content: string;
   owner: ObjectId | IUser;
+  ownerId: string;
 }
 
 export type ICreateArticleData = Pick<IArticle, "title" | "content">;
@@ -20,6 +21,7 @@ export class ArticleEntity {
   title: string;
   content: string;
   owner?: UserEntity;
+  ownerId: string;
 
   constructor(article: IArticle) {
     this.id = article._id.toString();
@@ -28,6 +30,9 @@ export class ArticleEntity {
 
     if (article.owner && typeof article.owner === "object") {
       this.owner = new UserEntity(article.owner as IUser);
+      this.ownerId = article.owner._id.toString();
+    } else {
+      this.ownerId = (article.owner as ObjectId).toString();
     }
   }
 }
