@@ -1,7 +1,6 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import { IUser } from "./user-types";
-// import beautifyUnique from "mongoose-beautiful-unique-validation";
 
 Schema.Types.String.set("trim", true);
 
@@ -23,8 +22,6 @@ const userSchema = new Schema<IUser>(
   },
   { timestamps: true }
 );
-
-// userSchema.plugin(beautifyUnique);
 
 userSchema.methods.comparePassword = async function (password: string) {
   return bcrypt.compare(password, this.password);

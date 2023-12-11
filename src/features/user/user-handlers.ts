@@ -43,6 +43,7 @@ export const signIn =
         userData.username,
         userData.password
       );
+      debugger;
 
       return res.cookie(authCookieName, token, authCookieOptions).json(
         new JsonResponse({
