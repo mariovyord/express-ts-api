@@ -7,6 +7,8 @@ import handleErrors from "./middleware/error-middleware";
 import loggerMiddleware from "./middleware/logger-middleware";
 import { AppError } from "./utils/app-error";
 import getConfig from "./config/get-config";
+import * as swaggerDoc from "../swagger.json";
+import swagger from "swagger-ui-express";
 
 /**
  * The ExpressJS app
@@ -37,6 +39,7 @@ app.use(express.static(path.join(__dirname, "public")));
  * Routes and global error handling
  */
 app.use(loggerMiddleware());
+app.use("/docs", swagger.serve, swagger.setup(swaggerDoc));
 app.use(router);
 app.use(handleErrors());
 
