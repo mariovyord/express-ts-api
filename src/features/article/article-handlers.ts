@@ -21,7 +21,12 @@ export function getAll() {
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.NOT_FOUND, "Articles not found"));
+      next(
+        new AppError(
+          HttpStatusCode.INTERNAL_SERVER_ERROR,
+          "Something went wrong"
+        )
+      );
     }
   };
 }
@@ -38,16 +43,16 @@ export function getOne() {
       const result = await articleService.getOne(id, query);
 
       if (!result) {
-        throw new Error("Article not found");
+        throw new Error("Not found");
       }
 
       return res.json({
         code: HttpStatusCode.OK,
-        message: "Details of article",
+        message: "Details",
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.NOT_FOUND, "Article not found"));
+      next(new AppError(HttpStatusCode.NOT_FOUND, "Not found"));
     }
   };
 }

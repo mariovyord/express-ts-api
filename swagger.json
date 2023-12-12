@@ -2,8 +2,8 @@
   "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
-    "title": "Seans-TypeScript-NodeJS-CRUD-REST-API-Boilerplate",
-    "description": "A minimal and easy to follow example of what you need to create a CRUD style API in NodeJs using TypeScript",
+    "title": "Express TS API",
+    "description": "A minimal API",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
@@ -11,200 +11,503 @@
   },
   "servers": [
     {
-      "url": "/",
-      "description": "Local Dev, or from Heroku"
-    },
-    {
-      "url": "/api/",
-      "description": "With docker-compose and nginx proxy"
+      "url": "/api/v1",
+      "description": "Version 1"
     }
   ],
   "tags": [
     {
-      "name": "Cats",
-      "description": "API for cats in the system"
+      "name": "Articles",
+      "description": "API related to articles"
+    },
+    {
+      "name": "User",
+      "description": "API related to user auth and user data"
     }
   ],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
   "paths": {
-    "/cats": {
-      "get": {
-        "tags": ["Cats"],
-        "summary": "Get all cats in system",
+    "/signup": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Create a new user",
+        "requestBody": {
+          "description": "User Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSignUp"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed. Bad request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/signin": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Authenticate user",
+        "requestBody": {
+          "description": "User Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSignIn"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/Cats"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error401Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/signout": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Sign out user",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignOutResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/articles": {
+      "get": {
+        "tags": ["Articles"],
+        "summary": "Get all articles",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticlesResponse"
+                }
+              }
             }
           }
         }
       },
       "post": {
-        "tags": ["Cats"],
-        "summary": "Create a new cat in system",
+        "tags": ["Articles"],
+        "summary": "Create a new article",
         "requestBody": {
-          "description": "Cat Object",
+          "description": "Article Object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/definitions/Cat"
+                "$ref": "#/components/schemas/ArticleCreate"
               }
             }
           }
         },
-        "produces": ["application/json"],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/id"
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleResponse"
+                }
+              }
             }
           },
           "400": {
-            "description": "Failed. Bad post data."
+            "description": "Failed. Bad request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400Response"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/cats/{id}": {
+    "/articles/{id}": {
       "parameters": [
         {
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "ID of the cat that we want to match",
-          "type": "string"
+          "description": "ID of the article"
         }
       ],
       "get": {
-        "tags": ["Cats"],
-        "summary": "Get cat with given ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Cat with id",
-            "schema": {
-              "$ref": "#/definitions/id"
-            }
-          }
-        ],
+        "tags": ["Articles"],
+        "summary": "Get article with given ID",
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/Cat"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleResponse"
+                }
+              }
             }
           },
           "404": {
-            "description": "Failed. Cat not found."
+            "description": "Not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error404Response"
+                }
+              }
+            }
           }
         }
       },
-      "put": {
-        "summary": "Update cat with given ID",
-        "tags": ["Cats"],
+      "patch": {
+        "summary": "Update article with given ID",
+        "tags": ["Articles"],
         "requestBody": {
-          "description": "Cat Object",
+          "description": "Article Object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/definitions/Cat"
+                "$ref": "#/components/schemas/ArticlePatch"
               }
             }
           }
         },
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Cat with new values of properties",
-            "schema": {
-              "$ref": "#/definitions/id"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/Cat"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleResponse"
+                }
+              }
             }
           },
           "400": {
-            "description": "Failed. Bad post data."
-          },
-          "404": {
-            "description": "Failed. Cat not found."
+            "description": "Bad request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400Response"
+                }
+              }
+            }
           }
         }
       },
       "delete": {
-        "summary": "Delete cat with given ID",
-        "tags": ["Cats"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Delete Cat with id",
-            "schema": {
-              "$ref": "#/definitions/id"
-            }
-          }
-        ],
+        "summary": "Delete article with given ID",
+        "tags": ["Articles"],
         "responses": {
           "200": {
             "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/id"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteResponse"
+                }
+              }
             }
           },
-          "404": {
-            "description": "Failed. Cat not found."
+          "400": {
+            "description": "Bad request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error400Response"
+                }
+              }
+            }
           }
         }
       }
     }
   },
-  "definitions": {
-    "id": {
-      "properties": {
-        "uuid": {
-          "type": "string"
+  "components": {
+    "schemas": {
+      "Article": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "owner": {
+            "oneOf": [
+              {
+                "type": "object",
+                "$ref": "#/components/schemas/User"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ownerId": {
+            "type": "string"
+          }
         }
-      }
-    },
-    "Cat": {
-      "type": "object",
-      "properties": {
-        "genus": {
-          "type": "string"
+      },
+      "ArticleCreate": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
         },
-        "name": {
-          "type": "string"
-        },
-        "isHungry": {
-          "type": "boolean"
-        },
-        "lastFedDate": {
-          "type": "string"
+        "required": ["title", "content"]
+      },
+      "ArticlePatch": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
         }
-      }
-    },
-    "Cats": {
-      "type": "object",
-      "properties": {
-        "cats": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/Cat"
+      },
+      "ArticlesResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Article"
+            }
+          }
+        }
+      },
+      "ArticleResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Article"
+          }
+        }
+      },
+      "DeleteResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          }
+        }
+      },
+      "UserEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          }
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          }
+        }
+      },
+      "id": {
+        "type": "string"
+      },
+      "Error404Response": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 404
+          },
+          "message": {
+            "type": "string",
+            "example": "Not found"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          }
+        }
+      },
+      "Error400Response": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Bad request"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          }
+        }
+      },
+      "UserSignUp": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          }
+        },
+        "required": ["username", "password", "firstName", "lastName"]
+      },
+      "UserSignIn": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["username", "password"]
+      },
+      "Error401Response": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 401
+          },
+          "message": {
+            "type": "string",
+            "example": "Unauthorized"
+          },
+          "data": {
+            "type": "null",
+            "example": null
+          }
+        }
+      },
+      "SignOutResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "OK"
+          },
+          "data": {
+            "type": "null",
+            "example": null
           }
         }
       }
