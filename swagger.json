@@ -108,6 +108,11 @@
       "get": {
         "tags": ["User"],
         "summary": "Sign out user",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -142,6 +147,11 @@
       "post": {
         "tags": ["Articles"],
         "summary": "Create a new article",
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
         "requestBody": {
           "description": "Article Object",
           "required": true,
@@ -215,6 +225,11 @@
       "patch": {
         "summary": "Update article with given ID",
         "tags": ["Articles"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
         "requestBody": {
           "description": "Article Object",
           "required": true,
@@ -252,6 +267,11 @@
       "delete": {
         "summary": "Delete article with given ID",
         "tags": ["Articles"],
+        "security": [
+          {
+            "cookieAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -278,6 +298,13 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "jwt"
+      }
+    },
     "schemas": {
       "Article": {
         "type": "object",
