@@ -1,13 +1,16 @@
 import mongoose from "mongoose";
-import supertest from "supertest";
+import supertest, { SuperTest, Test } from "supertest";
 import app from "../../src/app";
 import { testConnectionString } from "../test-utils";
 
 const url = "/api/v1/user/signup";
 
 describe(`${url}`, () => {
+  let agent: SuperTest<Test>;
+
   beforeAll(async () => {
     require("dotenv").config();
+    agent = supertest(app);
 
     await mongoose.connect(testConnectionString);
   });
@@ -20,7 +23,7 @@ describe(`${url}`, () => {
   });
 
   test("should return 4xx code when request body is empty", async () => {
-    const test = await supertest(app).post(url).expect(400);
+    const test = await agent.post(url).expect(400);
 
     expect(test.body.message).toBe('"username" is required');
     expect(test.body.data).toBe(null);
@@ -28,7 +31,7 @@ describe(`${url}`, () => {
   });
 
   test("should sign up successfully when user data is valid", async () => {
-    const test = await supertest(app)
+    const test = await agent
       .post(url)
       .set("Content-Type", "application/json")
       .send({
@@ -45,7 +48,7 @@ describe(`${url}`, () => {
   });
 
   test("should fail to sign up when password is invalid", async () => {
-    const test = await supertest(app)
+    const test = await agent
       .post(url)
       .set("Content-Type", "application/json")
       .send({
@@ -62,7 +65,7 @@ describe(`${url}`, () => {
   });
 
   test("should fail to sign up when username is invalid", async () => {
-    const test = await supertest(app)
+    const test = await agent
       .post(url)
       .set("Content-Type", "application/json")
       .send({
@@ -81,17 +84,14 @@ describe(`${url}`, () => {
   });
 
   test("should fail to sign up when username is not unique", async () => {
-    await supertest(app)
-      .post(url)
-      .set("Content-Type", "application/json")
-      .send({
-        username: "bob",
-        firstName: "John",
-        lastName: "Johnson",
-        password: "123123",
-      });
+    await agent.post(url).set("Content-Type", "application/json").send({
+      username: "bob",
+      firstName: "John",
+      lastName: "Johnson",
+      password: "123123",
+    });
 
-    const test = await supertest(app)
+    const test = await agent
       .post(url)
       .set("Content-Type", "application/json")
       .send({

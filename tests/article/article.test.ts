@@ -2,29 +2,36 @@ import supertest, { SuperTest, Test } from "supertest";
 import app from "../../src/app";
 import mongoose from "mongoose";
 import { testConnectionString } from "../test-utils";
-import bcrypt from "bcrypt";
 
 const url = "/api/v1/articles";
+const mockUser = {
+  username: "user",
+  firstName: "User",
+  lastName: "Useroff",
+  password: "123123",
+};
 
 describe(`${url}`, () => {
   let agent: SuperTest<Test>;
+
+  async function login() {
+    return await agent
+      .post("/api/v1/user/signin")
+      .set("Content-Type", "application/json")
+      .send({ username: "user", password: "123123" });
+  }
 
   beforeAll(async () => {
     require("dotenv").config();
 
     await mongoose.connect(testConnectionString);
 
-    agent = await supertest(app);
+    agent = supertest(app);
 
     await agent
       .post("/api/v1/user/signup")
       .set("Content-Type", "application/json")
-      .send({
-        username: "user",
-        firstName: "User",
-        lastName: "Useroff",
-        password: "123123",
-      });
+      .send(mockUser);
   });
 
   afterAll((done) => {
@@ -43,10 +50,7 @@ describe(`${url}`, () => {
   });
 
   test("should create article when data is valid", async () => {
-    const req = await agent
-      .post("/api/v1/user/signin")
-      .set("Content-Type", "application/json")
-      .send({ username: "user", password: "123123" });
+    const req = await login();
 
     const cookies = req.headers["set-cookie"];
     await agent

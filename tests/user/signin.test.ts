@@ -1,4 +1,4 @@
-import supertest from "supertest";
+import supertest, { SuperTest, Test } from "supertest";
 import app from "../../src/app";
 import mongoose from "mongoose";
 import { testConnectionString } from "../test-utils";
@@ -6,11 +6,15 @@ import { testConnectionString } from "../test-utils";
 const url = "/api/v1/user/signin";
 
 describe(`${url}`, () => {
+  let agent: SuperTest<Test>;
+
   beforeAll(async () => {
     require("dotenv").config();
+    agent = supertest(app);
+
     return mongoose.connect(testConnectionString).then(async () => {
       // signup a user
-      return await supertest(app)
+      return await agent
         .post("/api/v1/user/signup")
         .set("Content-Type", "application/json")
         .send({
@@ -29,7 +33,7 @@ describe(`${url}`, () => {
   });
 
   test("should return 4xx code when request body is empty", async () => {
-    const test = await supertest(app).post(url).expect(400);
+    const test = await agent.post(url).expect(400);
 
     expect(test.body.message).toBe('"username" is required');
     expect(test.body.data).toBe(null);
@@ -37,7 +41,7 @@ describe(`${url}`, () => {
   });
 
   test("should signin with existing user when request body is valid", async () => {
-    const test = await supertest(app)
+    const test = await agent
       .post(url)
       .set("Content-Type", "application/json")
       .send({ username: "user", password: "123123" })
@@ -49,7 +53,7 @@ describe(`${url}`, () => {
   });
 
   test("should fail to sign in when password do not match", async () => {
-    const test = await supertest(app)
+    const test = await agent
       .post(url)
       .set("Content-Type", "application/json")
       .send({ username: "user", password: "12c3123" })
@@ -61,7 +65,7 @@ describe(`${url}`, () => {
   });
 
   test("should fail to sign in when username do not match", async () => {
-    const test = await supertest(app)
+    const test = await agent
       .post(url)
       .set("Content-Type", "application/json")
       .send({ username: "user1", password: "1c23123" })
