@@ -322,7 +322,7 @@
             "oneOf": [
               {
                 "type": "object",
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/UserEntity"
               },
               {
                 "type": "null"
