@@ -5,7 +5,6 @@ import router from "./root-router";
 import path from "path";
 import handleErrors from "./middleware/error-middleware";
 import loggerMiddleware from "./middleware/logger-middleware";
-import { AppError } from "./utils/app-error";
 import getConfig from "./config/get-config";
 import * as swaggerDoc from "../swagger.json";
 import swagger from "swagger-ui-express";
@@ -42,20 +41,5 @@ app.use(loggerMiddleware());
 app.use("/docs", swagger.serve, swagger.setup(swaggerDoc));
 app.use(router);
 app.use(handleErrors());
-
-// Uncaught exception and SIGTERM handling
-process.on("uncaughtException", (err: Error | AppError) => {
-  console.error("Uncaught Exception:", err);
-  // Perform necessary cleanup or logging
-  if (!("isOperational" in err) || err.isOperational === false) {
-    process.exit(1);
-  }
-});
-
-process.on("SIGTERM", () => {
-  console.log("Received SIGTERM signal");
-  // Perform cleanup tasks
-  process.exit(0); // Exit with success status code (0)
-});
 
 export default app;
