@@ -48,7 +48,6 @@ export function signIn() {
         userData.username,
         userData.password
       );
-      debugger;
 
       return res.cookie(authCookieName, token, authCookieOptions).json({
         code: HttpStatusCode.OK,
