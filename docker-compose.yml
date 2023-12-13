@@ -2,10 +2,10 @@ version: "3"
 
 services:
   app:
+    image: mariovyordanov/api-node
     build:
       context: .
       dockerfile: ./Dockerfile
-      target: production
     ports:
       - "5000:5000"
     networks:

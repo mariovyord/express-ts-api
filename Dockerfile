@@ -7,24 +7,6 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json to the working directory (better layer caching)
 COPY package*.json ./
 
-FROM base as dev
-
-# Install dependencies
-RUN --mount=type=cache,target=/usr/src/app/.npm \
-  npm set cache /usr/src/app/.npm && \
-  npm install
-
-# Copy all local files to the working directory
-COPY . .
-
-# Build the TypeScript files
-RUN npm run build
-
-# Command to run the app
-CMD ["npm", "run", "dev"]
-
-FROM base as production
-
 # Set NODE_ENV
 ENV NODE_ENV production
 

@@ -5,6 +5,10 @@ TEST_COMPOSE_FILE=docker-compose-test.yml
 
 ### DOCKER COMPOSE COMMANDS
 
+.PHONY: prod-compose-build
+prod-compose-build:
+	docker compose -f $(PROD_COMPOSE_FILE) build
+
 .PHONY: compose-build
 compose-build:
 	docker compose -f $(DEV_COMPOSE_FILE) build
