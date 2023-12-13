@@ -7,6 +7,8 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "5000:5000"
+    networks:
+      - backend
     depends_on:
       - mongo
     env_file:
@@ -19,9 +21,15 @@ services:
     image: mongo:6.0.4
     ports:
       - "27018:27017"
+    networks:
+      - backend
     volumes:
       - mongodata:/data/db
 
 volumes:
   mongodata:
     driver: local
+
+networks:
+  backend:
+    name: backend
