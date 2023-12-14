@@ -8,6 +8,7 @@ import loggerMiddleware from "./middleware/logger-middleware";
 import getConfig from "./config/get-config";
 import * as swaggerDoc from "../swagger.json";
 import swagger from "swagger-ui-express";
+import helmet from "helmet";
 
 /**
  * The ExpressJS app
@@ -21,6 +22,7 @@ app.enable("trust proxy");
 
 const config = getConfig();
 
+app.use(helmet());
 app.use(
   cors({
     origin: config.ALLOW_ORIGIN?.split(",").map((x) => x.trim()),
