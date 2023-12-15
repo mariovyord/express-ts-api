@@ -1,9 +1,7 @@
 import User from "./user-schema";
-import { SignUpUserData, UserEntity } from "./user-types";
+import { ISignUpUserData, UserEntity } from "./user-types";
 
-export async function findOneByUsername(
-  username: string | undefined
-): Promise<UserEntity | null> {
+export async function findOneByUsername(username: string | undefined) {
   if (!username) return null;
 
   const existing = await User.findOne({
@@ -12,13 +10,16 @@ export async function findOneByUsername(
 
   if (!existing) return null;
 
-  return new UserEntity(existing);
+  return existing;
 }
 
-export async function findOneByPassword(
-  username: string | undefined,
-  password: string | undefined
-): Promise<UserEntity | null> {
+export async function findOneById(id: string) {
+  const existing = await User.findById(id);
+  if (!existing) return null;
+  return existing;
+}
+
+export async function findOneByPassword(username: string | undefined, password: string | undefined) {
   if (!username || !password) return null;
 
   const existing = await User.findOne({
@@ -31,14 +32,11 @@ export async function findOneByPassword(
 
   if (!matching) return null;
 
-  return new UserEntity(existing);
+  return existing;
 }
 
-export async function createUser(
-  userData: SignUpUserData
-): Promise<UserEntity> {
+export async function createUser(userData: ISignUpUserData) {
   const user = new User(userData);
   await user.save();
-
-  return new UserEntity(user);
+  return user;
 }

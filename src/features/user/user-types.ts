@@ -11,8 +11,18 @@ export interface IUser {
   comparePassword: (password: string) => Promise<boolean>;
 }
 
-export interface SignUpUserData {
+export interface IUserLocal {
+  id: string;
+}
+
+export interface ISignUpUserData {
   username: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface IUpdateUserData {
   password: string;
   firstName: string;
   lastName: string;
