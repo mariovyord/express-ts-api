@@ -6,7 +6,7 @@ export interface IUser {
   password: string;
   firstName: string;
   lastName: string;
-  comparePassword: (password: string) => boolean;
+  comparePassword: (password: string) => Promise<boolean>;
 }
 
 export interface SignUpUserData {
