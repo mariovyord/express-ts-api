@@ -1,5 +1,14 @@
 import { SortOrder } from "mongoose";
-import { GetAllArticlesQuery } from "./article-types";
+
+export interface IFullQuery {
+  where?: string | string[];
+  sortBy?: string | string[];
+  page?: string;
+  pageSize?: string;
+  populate?: string | string[];
+  select?: string | string[];
+  count?: string;
+}
 
 export interface IParsedQuery {
   find: { [key: string]: string | string[] };
@@ -14,7 +23,7 @@ export interface IParsedQuery {
   count: boolean;
 }
 
-export function parseQuery(query: GetAllArticlesQuery): IParsedQuery {
+export function parseQueryToMongoParams(query: IFullQuery): IParsedQuery {
   const parsedQuery: IParsedQuery = {
     find: {},
     sort: {},
@@ -58,8 +67,7 @@ export function parseQuery(query: GetAllArticlesQuery): IParsedQuery {
 
   if (query.page && query.pageSize) {
     parsedQuery.pagination.limit = parseInt(query.pageSize);
-    parsedQuery.pagination.skip =
-      Math.max(0, parseInt(query.page) - 1) * parsedQuery.pagination.limit;
+    parsedQuery.pagination.skip = Math.max(0, parseInt(query.page) - 1) * parsedQuery.pagination.limit;
   }
 
   // Populate properties

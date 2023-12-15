@@ -1,9 +1,9 @@
+import { IFullQuery, parseQueryToMongoParams } from "../../utils/parse-query";
 import * as commentRepository from "./comment-repository";
-import { CommentEntity, GetAllCommentsQuery, ICreateCommentData, IPatchCommentData } from "./comment-types";
-import { parseQuery } from "./comment-utils";
+import { CommentEntity, ICreateCommentData, IPatchCommentData } from "./comment-types";
 
-export async function getAllComments(query: GetAllCommentsQuery): Promise<CommentEntity[] | number> {
-  const parsedQuery = parseQuery(query);
+export async function getAllComments(query: IFullQuery): Promise<CommentEntity[] | number> {
+  const parsedQuery = parseQueryToMongoParams(query);
 
   if (parsedQuery.count) {
     return commentRepository.countDocumentsByQuery(parsedQuery);

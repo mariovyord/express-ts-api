@@ -1,9 +1,9 @@
+import { IFullQuery, parseQueryToMongoParams } from "../../utils/parse-query";
 import * as articleRepository from "./article-repository";
-import { ArticleEntity, GetAllArticlesQuery, ICreateArticleData, IPatchArticleData } from "./article-types";
-import { parseQuery } from "./article-utils";
+import { ArticleEntity, ICreateArticleData, IPatchArticleData } from "./article-types";
 
-export async function getAll(query: GetAllArticlesQuery): Promise<ArticleEntity[] | number> {
-  const parsedQuery = parseQuery(query);
+export async function getAll(query: IFullQuery): Promise<ArticleEntity[] | number> {
+  const parsedQuery = parseQueryToMongoParams(query);
 
   if (parsedQuery.count) {
     return articleRepository.countDocumentsByQuery(parsedQuery);

@@ -1,6 +1,6 @@
+import { IParsedQuery } from "../../utils/parse-query";
 import Comment from "./comment-schema";
 import { ICreateCommentData } from "./comment-types";
-import { IParsedQuery } from "./comment-utils";
 
 export async function findCommentsByQuery(parsedQuery: IParsedQuery) {
   const comments = await Comment.find(parsedQuery.find)

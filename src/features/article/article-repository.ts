@@ -1,6 +1,6 @@
+import { IParsedQuery } from "../../utils/parse-query";
 import Article from "./article-schema";
 import { ICreateArticleData } from "./article-types";
-import { IParsedQuery } from "./article-utils";
 
 export async function findArticlesByQuery(parsedQuery: IParsedQuery) {
   const articles = await Article.find(parsedQuery.find)
