@@ -28,7 +28,7 @@ export async function findOneByPassword(
   if (!existing) return null;
 
   const matching = await existing.comparePassword(password);
-  debugger;
+
   if (!matching) return null;
 
   return new UserEntity(existing);

@@ -1,16 +1,22 @@
 {
+  "version": "0.2.0",
   "configurations": [
     {
-      "name": "Docker Node.js Launch",
-      "type": "docker",
+      "type": "node",
       "request": "launch",
-      "preLaunchTask": "docker-run: debug",
-      "platform": "node",
-      "node": {
-        "port": 9229,
-        "localRoot": ".",
-        "remoteRoot": "/usr/src/app"
-      }
+      "name": "Launch Program",
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**"
+      ],
+      "program": "${workspaceFolder}/dist/index.js",
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "env": { "NODE_ENV": "development" },
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ],
+      "preLaunchTask": "npm run build"
     }
   ]
 }
