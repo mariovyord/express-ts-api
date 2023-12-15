@@ -6,20 +6,10 @@ import { articleCreateSchema, articlePatchSchema } from "./article-validators";
 
 const router = express.Router();
 
-router.get("/", articleController.getAll());
-router.post(
-  "/",
-  authenticateToken(),
-  validateBody(articleCreateSchema),
-  articleController.create()
-);
-router.get("/:id", articleController.getOne());
-router.patch(
-  "/:id",
-  validateBody(articlePatchSchema),
-  authenticateToken(),
-  articleController.patch()
-);
-router.delete("/:id", authenticateToken(), articleController.remove());
+router.get("/", articleController.getAllArticles());
+router.post("/", authenticateToken(), validateBody(articleCreateSchema), articleController.createArticle());
+router.get("/:id", articleController.getOneArticle());
+router.patch("/:id", validateBody(articlePatchSchema), authenticateToken(), articleController.updateArticle());
+router.delete("/:id", authenticateToken(), articleController.deleteArticle());
 
 export default router;

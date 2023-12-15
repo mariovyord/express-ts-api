@@ -1,32 +1,24 @@
 import * as articleRepository from "./article-repository";
-import {
-  ArticleEntity,
-  GetAllArticlesQuery,
-  ICreateArticleData,
-  IPatchArticleData,
-} from "./article-types";
+import { ArticleEntity, GetAllArticlesQuery, ICreateArticleData, IPatchArticleData } from "./article-types";
 import { parseQuery } from "./article-utils";
 
-export async function getAll(
-  query: GetAllArticlesQuery
-): Promise<ArticleEntity[] | number> {
+export async function getAll(query: GetAllArticlesQuery): Promise<ArticleEntity[] | number> {
   const parsedQuery = parseQuery(query);
 
   if (parsedQuery.count) {
     return articleRepository.countDocumentsByQuery(parsedQuery);
   }
 
-  return articleRepository.findArticlesByQuery(parsedQuery);
+  const articles = await articleRepository.findArticlesByQuery(parsedQuery);
+
+  return articles.map((x) => new ArticleEntity(x));
 }
 
-export async function getOne(
-  id: string,
-  query: any
-): Promise<ArticleEntity | null> {
+export async function getOne(id: string, query: any): Promise<ArticleEntity | null> {
   let populate = "";
   let limitPopulate = "";
 
-  if (query.populate) {
+  if (query && query.populate) {
     populate += query.populate;
 
     if (query.populate.includes("owner")) {
@@ -34,26 +26,44 @@ export async function getOne(
     }
   }
 
-  return articleRepository.findArticleById(id);
+  const article = await articleRepository.findArticleById(id, { populate, limitPopulate });
+
+  if (!article) {
+    throw new Error("Not found");
+  }
+
+  return new ArticleEntity(article);
 }
 
 export async function create(data: ICreateArticleData): Promise<ArticleEntity> {
-  return articleRepository.createArticle(data);
+  const article = await articleRepository.createArticle(data);
+  return new ArticleEntity(article);
 }
 
-export async function update(
-  id: string,
-  userId: string,
-  data: IPatchArticleData
-): Promise<ArticleEntity> {
-  return articleRepository.findAndUpdateArticleById(id, userId, data);
+const ALLOWED_UPDATE_FIELDS = ["title", "content"];
+
+export async function update(id: string, userId: string, data: IPatchArticleData): Promise<ArticleEntity> {
+  const article = await articleRepository.findArticleById(id);
+
+  if (article === null) throw new Error("Article not found");
+  if (article.owner.toString() !== userId) throw new Error("Only owners can update article");
+
+  for (const key of ALLOWED_UPDATE_FIELDS) {
+    if (key in data) {
+      article[key] = data[key];
+    }
+  }
+
+  await article.save();
+
+  return new ArticleEntity(article);
 }
 
 export async function remove(id: string, userId: string): Promise<void> {
-  const item = await articleRepository.findArticleById(id);
+  const article = await articleRepository.findArticleById(id);
 
-  if (!item) throw new Error("Article does not exist");
-  if (item.owner !== userId) throw new Error("Only owners can delete items");
+  if (!article) throw new Error("Article does not exist");
+  if (article.owner.toString() !== userId) throw new Error("Only owners can delete articles");
 
   await articleRepository.deleteArticleById(id);
 }

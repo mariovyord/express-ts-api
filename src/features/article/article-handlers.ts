@@ -5,12 +5,8 @@ import { AppError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
 import { GetAllArticlesQuery } from "./article-types";
 
-export function getAll() {
-  return async (
-    req: Request<{}, {}, {}, GetAllArticlesQuery>,
-    res: Response<IJsonResponse>,
-    next: NextFunction
-  ) => {
+export function getAllArticles() {
+  return async (req: Request<{}, {}, {}, GetAllArticlesQuery>, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const query = req.query;
       const result = await articleService.getAll(query);
@@ -21,25 +17,17 @@ export function getAll() {
         data: result,
       });
     } catch (err) {
-      next(
-        new AppError(
-          HttpStatusCode.INTERNAL_SERVER_ERROR,
-          "Something went wrong"
-        )
-      );
+      next(new AppError(HttpStatusCode.INTERNAL_SERVER_ERROR, "Something went wrong"));
     }
   };
 }
 
-export function getOne() {
-  return async (
-    req: Request,
-    res: Response<IJsonResponse>,
-    next: NextFunction
-  ) => {
+export function getOneArticle() {
+  return async (req: Request, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const id = req.params.id;
       const query = req.query;
+
       const result = await articleService.getOne(id, query);
 
       if (!result) {
@@ -52,17 +40,14 @@ export function getOne() {
         data: result,
       });
     } catch (err) {
+      console.log(err);
       next(new AppError(HttpStatusCode.NOT_FOUND, "Not found"));
     }
   };
 }
 
-export function create() {
-  return async (
-    req: Request,
-    res: Response<IJsonResponse>,
-    next: NextFunction
-  ) => {
+export function createArticle() {
+  return async (req: Request, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const data = req.body;
       const userId = res.locals.user.id;
@@ -77,19 +62,13 @@ export function create() {
         data: result,
       });
     } catch (err) {
-      next(
-        new AppError(HttpStatusCode.BAD_REQUEST, "Failed to create article")
-      );
+      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to create article"));
     }
   };
 }
 
-export function patch() {
-  return async (
-    req: Request,
-    res: Response<IJsonResponse>,
-    next: NextFunction
-  ) => {
+export function updateArticle() {
+  return async (req: Request, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const id = req.params.id;
       const userId = res.locals.user.id;
@@ -101,19 +80,13 @@ export function patch() {
         data: result,
       });
     } catch (err) {
-      next(
-        new AppError(HttpStatusCode.BAD_REQUEST, "Failed to update article")
-      );
+      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to update article"));
     }
   };
 }
 
-export function remove() {
-  return async (
-    req: Request,
-    res: Response<IJsonResponse>,
-    next: NextFunction
-  ) => {
+export function deleteArticle() {
+  return async (req: Request, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const id = req.params.id;
       const userId = res.locals.user.id;
@@ -126,9 +99,7 @@ export function remove() {
         data: null,
       });
     } catch (err) {
-      next(
-        new AppError(HttpStatusCode.BAD_REQUEST, "Failed to delete article")
-      );
+      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to delete article"));
     }
   };
 }

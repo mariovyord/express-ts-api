@@ -60,7 +60,7 @@ export async function updateUser(userId: string, userData: Partial<IUpdateUserDa
   }
 
   for (const key of ALLOWED_UPDATE_FIELDS) {
-    if (userData[key]) {
+    if (key in userData) {
       user[key] = userData[key];
     }
   }
