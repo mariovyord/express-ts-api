@@ -6,6 +6,8 @@ export interface IUser {
   password: string;
   firstName: string;
   lastName: string;
+  createdAt: Date;
+  updatedAt: Date;
   comparePassword: (password: string) => Promise<boolean>;
 }
 
@@ -24,11 +26,15 @@ export class UserEntity {
   username: string;
   firstName: string;
   lastName: string;
+  createdAt: Date;
+  updatedAt: Date;
 
   constructor(user: IUser) {
     this.id = user._id.toString();
     this.username = user.username;
     this.firstName = user.firstName;
     this.lastName = user.lastName;
+    this.createdAt = user.createdAt;
+    this.updatedAt = user.updatedAt;
   }
 }

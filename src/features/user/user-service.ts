@@ -3,7 +3,9 @@ import getConfig from "../../config/get-config";
 import { SignUpUserData, UserEntity } from "./user-types";
 import * as userRepository from "./user-repository";
 
-async function signUp(userData: SignUpUserData): Promise<[string, UserEntity]> {
+export async function signUp(
+  userData: SignUpUserData
+): Promise<[string, UserEntity]> {
   const existing = await userRepository.findOneByUsername(userData.username);
 
   if (existing) {
@@ -16,7 +18,7 @@ async function signUp(userData: SignUpUserData): Promise<[string, UserEntity]> {
   return [token, user];
 }
 
-async function signIn(
+export async function signIn(
   username: string,
   password: string
 ): Promise<[string, UserEntity]> {
@@ -42,8 +44,3 @@ async function createToken(id: string) {
     expiresIn: "7d",
   });
 }
-
-export default {
-  signIn,
-  signUp,
-};

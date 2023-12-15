@@ -53,7 +53,7 @@ export async function remove(id: string, userId: string): Promise<void> {
   const item = await articleRepository.findArticleById(id);
 
   if (!item) throw new Error("Article does not exist");
-  if (item.ownerId !== userId) throw new Error("Only owners can delete items");
+  if (item.owner !== userId) throw new Error("Only owners can delete items");
 
   await articleRepository.deleteArticleById(id);
 }

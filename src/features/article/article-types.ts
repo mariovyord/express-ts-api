@@ -6,7 +6,8 @@ export interface IArticle {
   title: string;
   content: string;
   owner: ObjectId | IUser;
-  ownerId: string;
+  createdAt: Date;
+  updatedAt: Date;
   estimatedDocumentCount: () => number;
   count: () => number;
 }
@@ -22,19 +23,21 @@ export class ArticleEntity {
   id: string;
   title: string;
   content: string;
-  owner?: UserEntity;
-  ownerId: string;
+  owner: UserEntity | string;
+  createdAt: Date;
+  updatedAt: Date;
 
   constructor(article: IArticle) {
     this.id = article._id.toString();
     this.title = article.title;
     this.content = article.content;
+    this.createdAt = article.createdAt;
+    this.updatedAt = article.updatedAt;
 
     if (article.owner && typeof article.owner === "object") {
       this.owner = new UserEntity(article.owner as IUser);
-      this.ownerId = article.owner._id.toString();
     } else {
-      this.ownerId = (article.owner as ObjectId).toString();
+      this.owner = (article.owner as ObjectId).toString();
     }
   }
 }

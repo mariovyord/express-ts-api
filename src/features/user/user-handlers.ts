@@ -1,5 +1,5 @@
 import { IJsonResponse } from "../../utils/json-response";
-import authService from "./user-service";
+import * as authService from "./user-service";
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
