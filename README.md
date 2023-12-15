@@ -21,6 +21,9 @@ Marked with \* are the endpoints that require auth cookie with jwt token.
 - `POST /api/v1/users/signup`
 - `POST /api/v1/users/signin`
 - `DELETE /api/v1/users/signout`\*
+- `GET /api/v1/users/:id`\*
+- `PATCH /api/v1/users/:id`\*
+- `PATCH /api/v1/users/:id/password`\*
 
 ## **Articles service endpoints**
 
@@ -29,6 +32,14 @@ Marked with \* are the endpoints that require auth cookie with jwt token.
 - `POST /api/v1/articles` \*
 - `PATCH /api/v1/articles/:id` \*
 - `DELETE /api/v1/articles/:id` \*
+
+## **Comments service endpoints**
+
+- `GET /api/v1/comments`
+- `GET /api/v1/comments/:id`
+- `POST /api/v1/comments` \*
+- `PATCH /api/v1/comments/:id` \*
+- `DELETE /api/v1/comments/:id` \*
 
 ### Query params
 
