@@ -4,6 +4,7 @@ import { AppError } from "./utils/app-error";
 import { IJsonResponse } from "./utils/json-response";
 import userModule from "./features/user";
 import articleModule from "./features/article";
+import commentModule from "./features/comment";
 
 const router = express.Router();
 
@@ -22,6 +23,7 @@ function ping(req: Request, res: Response<IJsonResponse>) {
 router.get("/api/ping", ping);
 router.use(getSubRoute("v1", "user"), userModule);
 router.use(getSubRoute("v1", "articles"), articleModule);
+router.use(getSubRoute("v1", "comments"), commentModule);
 
 router.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(HttpStatusCode.NOT_FOUND, "Not found"));

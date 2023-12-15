@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import { IUser, UserEntity } from "../user/user-types";
+import { isValidObjectId } from "mongoose";
 
 export interface IArticle {
   _id: ObjectId;
@@ -34,10 +35,10 @@ export class ArticleEntity {
     this.createdAt = article.createdAt;
     this.updatedAt = article.updatedAt;
 
-    if (article.owner && typeof article.owner === "object") {
-      this.owner = new UserEntity(article.owner as IUser);
-    } else {
+    if (isValidObjectId(article.owner)) {
       this.owner = (article.owner as ObjectId).toString();
+    } else {
+      this.owner = new UserEntity(article.owner as IUser);
     }
   }
 }

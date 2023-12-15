@@ -1,19 +1,19 @@
 import { IJsonResponse } from "../../utils/json-response";
-import * as articleService from "./article-service";
+import * as commentService from "./comment-service";
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
-import { GetAllArticlesQuery } from "./article-types";
+import { GetAllCommentsQuery } from "./comment-types";
 
-export function getAllArticles() {
-  return async (req: Request<{}, {}, {}, GetAllArticlesQuery>, res: Response<IJsonResponse>, next: NextFunction) => {
+export function getAllComments() {
+  return async (req: Request<{}, {}, {}, GetAllCommentsQuery>, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const query = req.query;
-      const result = await articleService.getAll(query);
+      const result = await commentService.getAllComments(query);
 
       return res.json({
         code: HttpStatusCode.OK,
-        message: "Articles",
+        message: "Comments",
         data: result,
       });
     } catch (err) {
@@ -22,13 +22,13 @@ export function getAllArticles() {
   };
 }
 
-export function getOneArticle() {
+export function getOneComment() {
   return async (req: Request, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const id = req.params.id;
       const query = req.query;
 
-      const result = await articleService.getOne(id, query);
+      const result = await commentService.getOneComment(id, query);
 
       if (!result) {
         throw new Error("Not found");
@@ -45,60 +45,60 @@ export function getOneArticle() {
   };
 }
 
-export function createArticle() {
+export function createComment() {
   return async (req: Request, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const data = req.body;
       const userId = res.locals.user.id;
-      const result = await articleService.create({
-        owner: userId,
+      const result = await commentService.createComment({
         ...data,
+        owner: userId,
       });
 
       return res.status(HttpStatusCode.CREATED).json({
         code: HttpStatusCode.CREATED,
-        message: "Created item in articles collection",
+        message: "Created item in comments collection",
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to create article"));
+      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to create comment"));
     }
   };
 }
 
-export function updateArticle() {
+export function updateComment() {
   return async (req: Request, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const id = req.params.id;
       const userId = res.locals.user.id;
-      const result = await articleService.update(id, userId, req.body);
+      const result = await commentService.updateComment(id, userId, req.body);
 
       return res.json({
         code: HttpStatusCode.OK,
-        message: "Updated item in articles collection",
+        message: "Updated item in comments collection",
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to update article"));
+      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to update comment"));
     }
   };
 }
 
-export function deleteArticle() {
+export function deleteComment() {
   return async (req: Request, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const id = req.params.id;
       const userId = res.locals.user.id;
 
-      await articleService.remove(id, userId);
+      await commentService.deleteComment(id, userId);
 
       return res.status(HttpStatusCode.NO_CONTENT).json({
         code: HttpStatusCode.NO_CONTENT,
-        message: "Deleted item in articles",
+        message: "Deleted item in comments",
         data: null,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to delete article"));
+      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to delete comment"));
     }
   };
 }

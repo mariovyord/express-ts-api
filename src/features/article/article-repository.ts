@@ -1,5 +1,5 @@
 import Article from "./article-schema";
-import { ArticleEntity, ICreateArticleData, IPatchArticleData } from "./article-types";
+import { ICreateArticleData } from "./article-types";
 import { IParsedQuery } from "./article-utils";
 
 export async function findArticlesByQuery(parsedQuery: IParsedQuery) {
@@ -27,7 +27,7 @@ export async function countDocumentsByQuery(parsedQuery: IParsedQuery) {
 
 export async function findArticleById(id: string, populateField = { populate: "", limitPopulate: "" }) {
   const article = await Article.findById(id).populate(populateField.populate, populateField.limitPopulate);
-  console.log("2", article, id);
+
   if (!article) {
     return null;
   }
