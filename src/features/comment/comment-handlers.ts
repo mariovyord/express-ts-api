@@ -3,10 +3,10 @@ import * as commentService from "./comment-service";
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
-import { GetAllCommentsQuery } from "./comment-types";
+import { IFullQuery } from "../../utils/parse-query";
 
 export function getAllComments() {
-  return async (req: Request<{}, {}, {}, GetAllCommentsQuery>, res: Response<IJsonResponse>, next: NextFunction) => {
+  return async (req: Request<{}, {}, {}, IFullQuery>, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const query = req.query;
       const result = await commentService.getAllComments(query);

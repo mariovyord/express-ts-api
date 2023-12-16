@@ -3,10 +3,10 @@ import * as articleService from "./article-service";
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
-import { GetAllArticlesQuery } from "./article-types";
+import { IFullQuery } from "../../utils/parse-query";
 
 export function getAllArticles() {
-  return async (req: Request<{}, {}, {}, GetAllArticlesQuery>, res: Response<IJsonResponse>, next: NextFunction) => {
+  return async (req: Request<{}, {}, {}, IFullQuery>, res: Response<IJsonResponse>, next: NextFunction) => {
     try {
       const query = req.query;
       const result = await articleService.getAll(query);

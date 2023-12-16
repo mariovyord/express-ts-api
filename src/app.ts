@@ -9,6 +9,7 @@ import getConfig from "./config/get-config";
 import * as swaggerDoc from "./swagger.json";
 import swagger from "swagger-ui-express";
 import helmet from "helmet";
+import handlebarsConfig from "./config/handlebars";
 
 /**
  * The ExpressJS app
@@ -21,6 +22,8 @@ const app = express();
 app.enable("trust proxy");
 
 const config = getConfig();
+
+handlebarsConfig(app);
 
 app.use(helmet());
 app.use(
@@ -35,7 +38,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "../public")));
 /**
  * Routes and global error handling
  */

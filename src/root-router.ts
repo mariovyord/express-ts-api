@@ -5,10 +5,11 @@ import { IJsonResponse } from "./utils/json-response";
 import userModule from "./features/user";
 import articleModule from "./features/article";
 import commentModule from "./features/comment";
+import statusModule from "./features/status";
 
 const router = express.Router();
 
-function getSubRoute(version: "v1" | "v2", subroute: string): string {
+function getApiSubRoute(version: "v1" | "v2", subroute: string): string {
   return `/api/${version}/${subroute}`;
 }
 
@@ -20,10 +21,17 @@ function ping(req: Request, res: Response<IJsonResponse>) {
   });
 }
 
+/**
+ * API
+ */
 router.get("/api/ping", ping);
-router.use(getSubRoute("v1", "user"), userModule);
-router.use(getSubRoute("v1", "articles"), articleModule);
-router.use(getSubRoute("v1", "comments"), commentModule);
+router.use(getApiSubRoute("v1", "user"), userModule);
+router.use(getApiSubRoute("v1", "articles"), articleModule);
+router.use(getApiSubRoute("v1", "comments"), commentModule);
+/**
+ * Pages
+ */
+router.use("/status", statusModule);
 
 router.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(HttpStatusCode.NOT_FOUND, "Not found"));
