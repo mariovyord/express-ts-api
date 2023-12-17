@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon -L src/index.ts",
     "debug": "set DEBUG=express:* & nodemon src/index.ts --inspect=9001",
     "debug-docker": "nodemon --exec 'node --inspect=0.0.0.0:9229 --require ts-node/register src/index.ts'",
     "build": "rimraf dist && tsc",
