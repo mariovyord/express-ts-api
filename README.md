@@ -1,6 +1,6 @@
 # Express API w/ Typescript
 
-Express API repo, made for experimenting with patterns and technologies.
+Experimenting with patterns and technologies.
 
 ## **Response**
 

@@ -1,8 +1,16 @@
 {
-  "name": "express-template",
+  "name": "express-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Express API w/ TypeScript",
   "main": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mariovyord/express-ts-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mariovyord/express-ts-api/issues"
+  },
+  "homepage": "https://github.com/mariovyord/express-ts-api#readme",
   "scripts": {
     "dev": "nodemon -L src/index.ts",
     "debug": "set DEBUG=express:* & nodemon src/index.ts --inspect=9001",
@@ -13,8 +21,8 @@
     "test:coverage": "jest --coverage --detectOpenHandles",
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Mario Yordanov",
+  "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
