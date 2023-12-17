@@ -28,9 +28,3 @@ compose-up-debug-build:
 .PHONY: compose-down
 compose-down:
 	docker compose -f $(DEV_COMPOSE_FILE) down
-
-###
-
-.PHONY: run-tests
-run-tests:
-	docker compose -f $(DEV_COMPOSE_FILE) -f $(TEST_COMPOSE_FILE) run --build app
