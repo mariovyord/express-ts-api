@@ -322,7 +322,7 @@
             "oneOf": [
               {
                 "type": "object",
-                "$ref": "#/components/schemas/UserEntity"
+                "$ref": "#/components/schemas/UserDto"
               },
               {
                 "type": "null"
@@ -403,7 +403,7 @@
           }
         }
       },
-      "UserEntity": {
+      "UserDto": {
         "type": "object",
         "properties": {
           "id": {

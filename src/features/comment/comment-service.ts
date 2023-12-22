@@ -1,8 +1,8 @@
 import { IFullQuery, parseQueryToMongoParams } from "../../utils/parse-query";
 import * as commentRepository from "./comment-repository";
-import { CommentEntity, ICreateCommentData, IPatchCommentData } from "./comment-types";
+import { CommentDto, ICreateCommentData, IPatchCommentData } from "./comment-types";
 
-export async function getAllComments(query: IFullQuery): Promise<CommentEntity[] | number> {
+export async function getAllComments(query: IFullQuery): Promise<CommentDto[] | number> {
   const parsedQuery = parseQueryToMongoParams(query);
 
   if (parsedQuery.count) {
@@ -11,10 +11,10 @@ export async function getAllComments(query: IFullQuery): Promise<CommentEntity[]
 
   const comments = await commentRepository.findCommentsByQuery(parsedQuery);
 
-  return comments.map((x) => new CommentEntity(x));
+  return comments.map((x) => new CommentDto(x));
 }
 
-export async function getOneComment(id: string, query: any): Promise<CommentEntity | null> {
+export async function getOneComment(id: string, query: any): Promise<CommentDto | null> {
   let populate = "";
   let limitPopulate = "";
 
@@ -32,17 +32,17 @@ export async function getOneComment(id: string, query: any): Promise<CommentEnti
     throw new Error("Not found");
   }
 
-  return new CommentEntity(comment);
+  return new CommentDto(comment);
 }
 
-export async function createComment(data: ICreateCommentData): Promise<CommentEntity> {
+export async function createComment(data: ICreateCommentData): Promise<CommentDto> {
   const comment = await commentRepository.createComment(data);
-  return new CommentEntity(comment);
+  return new CommentDto(comment);
 }
 
 const ALLOWED_UPDATE_FIELDS = ["content"];
 
-export async function updateComment(id: string, userId: string, data: IPatchCommentData): Promise<CommentEntity> {
+export async function updateComment(id: string, userId: string, data: IPatchCommentData): Promise<CommentDto> {
   const comment = await commentRepository.findCommentById(id);
 
   if (comment === null) throw new Error("Comment not found");
@@ -56,7 +56,7 @@ export async function updateComment(id: string, userId: string, data: IPatchComm
 
   await comment.save();
 
-  return new CommentEntity(comment);
+  return new CommentDto(comment);
 }
 
 export async function deleteComment(id: string, userId: string): Promise<void> {

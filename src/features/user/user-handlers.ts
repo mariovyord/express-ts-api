@@ -3,7 +3,7 @@ import * as userService from "./user-service";
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
-import { IUserLocal, UserEntity } from "./user-types";
+import { IUserLocal, UserDto } from "./user-types";
 
 const authCookieName = "jwt";
 const authCookieOptions = {
@@ -86,7 +86,7 @@ export function updateUser() {
       }
 
       const userData = req.body;
-      const updatedUser: UserEntity = await userService.updateUser(user.id, userData);
+      const updatedUser: UserDto = await userService.updateUser(user.id, userData);
 
       return res.json({
         code: HttpStatusCode.OK,

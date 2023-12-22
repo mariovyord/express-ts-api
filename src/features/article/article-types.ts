@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { IUser, UserEntity } from "../user/user-types";
+import { IUser, UserDto } from "../user/user-types";
 import { isValidObjectId } from "mongoose";
 
 export interface IArticle {
@@ -20,11 +20,11 @@ export type IPatchArticleData = Pick<IArticle, "title" | "content">;
 /**
  * Represents a Public Article with limited information.
  */
-export class ArticleEntity {
+export class ArticleDto {
   id: string;
   title: string;
   content: string;
-  owner: UserEntity | string;
+  owner: UserDto | string;
   createdAt: Date;
   updatedAt: Date;
 
@@ -38,7 +38,7 @@ export class ArticleEntity {
     if (isValidObjectId(article.owner)) {
       this.owner = (article.owner as ObjectId).toString();
     } else {
-      this.owner = new UserEntity(article.owner as IUser);
+      this.owner = new UserDto(article.owner as IUser);
     }
   }
 }

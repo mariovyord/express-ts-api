@@ -31,7 +31,7 @@ export interface IUpdateUserData {
 /**
  * Represents a Public User with limited information.
  */
-export class UserEntity {
+export class UserDto {
   id: string;
   username: string;
   firstName: string;

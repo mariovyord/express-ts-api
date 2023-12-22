@@ -1,6 +1,6 @@
 import { ObjectId, WithId } from "mongodb";
 import { isValidObjectId } from "mongoose";
-import { IUser, UserEntity } from "../user/user-types";
+import { IUser, UserDto } from "../user/user-types";
 
 export interface IComment {
   _id: ObjectId;
@@ -19,10 +19,10 @@ export type IPatchCommentData = Pick<IComment, "content">;
 /**
  * Represents a Public Comment with limited information.
  */
-export class CommentEntity {
+export class CommentDto {
   id: string;
   content: string;
-  owner: UserEntity | string;
+  owner: UserDto | string;
   parent: string;
   article: string;
   createdAt: Date;
@@ -39,7 +39,7 @@ export class CommentEntity {
     if (isValidObjectId(comment.owner)) {
       this.owner = (comment.owner as ObjectId).toString();
     } else {
-      this.owner = new UserEntity(comment.owner as IUser);
+      this.owner = new UserDto(comment.owner as IUser);
     }
   }
 }

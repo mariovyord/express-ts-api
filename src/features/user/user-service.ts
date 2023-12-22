@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import getConfig from "../../config/get-config";
-import { IUserLocal, ISignUpUserData, UserEntity, IUpdateUserData } from "./user-types";
+import { IUserLocal, ISignUpUserData, UserDto, IUpdateUserData } from "./user-types";
 import * as userRepository from "./user-repository";
 
-export async function signUp(userData: ISignUpUserData): Promise<[string, UserEntity]> {
+export async function signUp(userData: ISignUpUserData): Promise<[string, UserDto]> {
   const existing = await userRepository.findOneByUsername(userData.username);
 
   if (existing) {
@@ -13,10 +13,10 @@ export async function signUp(userData: ISignUpUserData): Promise<[string, UserEn
   const user = await userRepository.createUser(userData);
   const token = await createToken(user.id);
 
-  return [token, new UserEntity(user)];
+  return [token, new UserDto(user)];
 }
 
-export async function signIn(username: string, password: string): Promise<[string, UserEntity]> {
+export async function signIn(username: string, password: string): Promise<[string, UserDto]> {
   const user = await userRepository.findOneByPassword(username, password);
 
   if (!user) {
@@ -25,7 +25,7 @@ export async function signIn(username: string, password: string): Promise<[strin
 
   const token = await createToken(user.id);
 
-  return [token, new UserEntity(user)];
+  return [token, new UserDto(user)];
 }
 
 async function createToken(id: string) {
@@ -40,19 +40,19 @@ async function createToken(id: string) {
   });
 }
 
-export async function getUser(userData: IUserLocal): Promise<UserEntity> {
+export async function getUser(userData: IUserLocal): Promise<UserDto> {
   const user = await userRepository.findOneById(userData.id);
 
   if (!user) {
     throw new Error("Not found");
   }
 
-  return new UserEntity(user);
+  return new UserDto(user);
 }
 
 const ALLOWED_UPDATE_FIELDS = ["firstName", "lastName"];
 
-export async function updateUser(userId: string, userData: Partial<IUpdateUserData>): Promise<UserEntity> {
+export async function updateUser(userId: string, userData: Partial<IUpdateUserData>): Promise<UserDto> {
   const user = await userRepository.findOneById(userId);
 
   if (user === null || user._id.toString() !== userId) {
@@ -68,7 +68,7 @@ export async function updateUser(userId: string, userData: Partial<IUpdateUserDa
   // mongoose will auto-update updatedAt field
   await user.save();
 
-  return new UserEntity(user);
+  return new UserDto(user);
 }
 
 export async function updatePassword(userId: string, oldPassword: string, newPassword: string) {

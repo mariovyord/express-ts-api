@@ -1,5 +1,5 @@
 import User from "./user-schema";
-import { ISignUpUserData, UserEntity } from "./user-types";
+import { ISignUpUserData, UserDto } from "./user-types";
 
 export async function findOneByUsername(username: string | undefined) {
   if (!username) return null;
