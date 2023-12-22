@@ -1,23 +1,23 @@
 import jwt from "jsonwebtoken";
 import getConfig from "../../config/get-config";
 import { IUserLocal, ISignUpUserData, UserDto, IUpdateUserData } from "./user-types";
-import * as userRepository from "./user-repository";
+import * as userQueries from "./user-queries";
 
 export async function signUp(userData: ISignUpUserData): Promise<[string, UserDto]> {
-  const existing = await userRepository.findOneByUsername(userData.username);
+  const existing = await userQueries.findOneByUsername(userData.username);
 
   if (existing) {
     throw new Error("Username already exists");
   }
 
-  const user = await userRepository.createUser(userData);
+  const user = await userQueries.createUser(userData);
   const token = await createToken(user.id);
 
   return [token, new UserDto(user)];
 }
 
 export async function signIn(username: string, password: string): Promise<[string, UserDto]> {
-  const user = await userRepository.findOneByPassword(username, password);
+  const user = await userQueries.findOneByPassword(username, password);
 
   if (!user) {
     throw new Error("Incorrect username or password");
@@ -41,7 +41,7 @@ async function createToken(id: string) {
 }
 
 export async function getUser(userData: IUserLocal): Promise<UserDto> {
-  const user = await userRepository.findOneById(userData.id);
+  const user = await userQueries.findOneById(userData.id);
 
   if (!user) {
     throw new Error("Not found");
@@ -53,7 +53,7 @@ export async function getUser(userData: IUserLocal): Promise<UserDto> {
 const ALLOWED_UPDATE_FIELDS = ["firstName", "lastName"];
 
 export async function updateUser(userId: string, userData: Partial<IUpdateUserData>): Promise<UserDto> {
-  const user = await userRepository.findOneById(userId);
+  const user = await userQueries.findOneById(userId);
 
   if (user === null || user._id.toString() !== userId) {
     throw new Error("Failed to update user");
@@ -72,7 +72,7 @@ export async function updateUser(userId: string, userData: Partial<IUpdateUserDa
 }
 
 export async function updatePassword(userId: string, oldPassword: string, newPassword: string) {
-  const user = await userRepository.findOneById(userId);
+  const user = await userQueries.findOneById(userId);
 
   if (!user) {
     throw new Error("User does not exist");
