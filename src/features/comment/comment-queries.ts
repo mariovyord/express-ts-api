@@ -1,6 +1,7 @@
+import { Document, ObjectId } from "mongoose";
 import { IParsedQuery } from "../../utils/parse-query";
 import Comment from "./comment-schema";
-import { ICreateCommentData } from "./comment-types";
+import { IComment, ICreateCommentData } from "./comment-types";
 
 export async function findCommentsByQuery(parsedQuery: IParsedQuery) {
   const comments = await Comment.find(parsedQuery.find)
@@ -44,4 +45,8 @@ export async function createComment(data: ICreateCommentData) {
 
 export async function deleteCommentById(id: string) {
   await Comment.findOneAndDelete({ _id: id });
+}
+
+export async function saveUpdatedComment(comment: { save: () => void }) {
+  return comment.save();
 }

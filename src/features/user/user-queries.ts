@@ -40,3 +40,7 @@ export async function createUser(userData: ISignUpUserData) {
   await user.save();
   return user;
 }
+
+export async function saveUpdatedUser(user: { save: () => void }) {
+  return user.save();
+}

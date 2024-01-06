@@ -45,3 +45,7 @@ export async function createArticle(data: ICreateArticleData) {
 export async function deleteArticleById(id: string) {
   await Article.findOneAndDelete({ _id: id });
 }
+
+export async function saveUpdatedArticle(article: { save: () => void }) {
+  return article.save();
+}

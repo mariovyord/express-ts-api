@@ -66,7 +66,7 @@ export async function updateUser(userId: string, userData: Partial<IUpdateUserDa
   }
 
   // mongoose will auto-update updatedAt field
-  await user.save();
+  await userQueries.saveUpdatedUser(user);
 
   return new UserDto(user);
 }
@@ -86,7 +86,7 @@ export async function updatePassword(userId: string, oldPassword: string, newPas
 
   user.password = newPassword;
 
-  await user.save();
+  await userQueries.saveUpdatedUser(user);
 
   return user;
 }

@@ -54,7 +54,7 @@ export async function updateComment(id: string, userId: string, data: IPatchComm
     }
   }
 
-  await comment.save();
+  await commentQueries.saveUpdatedComment(comment);
 
   return new CommentDto(comment);
 }

@@ -54,7 +54,7 @@ export async function update(id: string, userId: string, data: IPatchArticleData
     }
   }
 
-  await article.save();
+  await articleQueries.saveUpdatedArticle(article);
 
   return new ArticleDto(article);
 }
