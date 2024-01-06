@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "../utils/app-error";
-import { HttpStatusCode } from "../utils/http-status-code";
+import { InternalServerError, UnauthorizedError } from "../utils/app-error";
 import getConfig from "../config/get-config";
 import { IUserLocal } from "../features/user/user-types";
 
@@ -10,20 +9,20 @@ const authenticateTokenMiddleware = () => (req: Request, res: Response, next: Ne
   const config = getConfig();
 
   if (!accessToken) {
-    return next(new AppError(HttpStatusCode.UNAUTHORIZED, "Unauthorized"));
+    return next(new UnauthorizedError());
   }
 
   if (!config.JWT_SECRET) {
-    return next(new AppError(HttpStatusCode.INTERNAL_SERVER_ERROR, "Something went wrong"));
+    return next(new InternalServerError());
   }
 
   jwt.verify(accessToken, config.JWT_SECRET, (err: jwt.VerifyErrors | null, user: IUserLocal) => {
     if (err) {
-      return next(new AppError(HttpStatusCode.FORBIDDEN, "Forbidden"));
+      return next(new UnauthorizedError());
     }
 
     res.locals.user = user;
-    next();
+    return next();
   });
 };
 

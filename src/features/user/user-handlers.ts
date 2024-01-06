@@ -1,7 +1,7 @@
 import { IJsonResponse } from "../../utils/json-response";
 import * as userService from "./user-service";
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../../utils/app-error";
+import { BadRequestError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
 import { IUserLocal, UserDto } from "./user-types";
 
@@ -25,7 +25,7 @@ export function signUp() {
         data: user,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Sign up failed"));
+      next(new BadRequestError());
     }
   };
 }
@@ -42,18 +42,22 @@ export function signIn() {
         data: user,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.UNAUTHORIZED, "Sign in failed"));
+      next(new BadRequestError());
     }
   };
 }
 
 export function signOut() {
-  return async (req: Request, res: Response<IJsonResponse>) => {
-    return res.clearCookie(authCookieName).json({
-      code: HttpStatusCode.OK,
-      message: "Sign out successful",
-      data: null,
-    });
+  return async (req: Request, res: Response<IJsonResponse>, next: NextFunction) => {
+    try {
+      return res.clearCookie(authCookieName).json({
+        code: HttpStatusCode.OK,
+        message: "Sign out successful",
+        data: null,
+      });
+    } catch (err) {
+      return next(new BadRequestError());
+    }
   };
 }
 
@@ -70,7 +74,7 @@ export function getUserData() {
         data: userData,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to fetch user data"));
+      return next(new BadRequestError());
     }
   };
 }
@@ -86,7 +90,7 @@ export function updateUser() {
       }
 
       const userData = req.body;
-      const updatedUser: UserDto = await userService.updateUser(user.id, userData);
+      const updatedUser = await userService.updateUser(user.id, userData);
 
       return res.json({
         code: HttpStatusCode.OK,
@@ -94,7 +98,7 @@ export function updateUser() {
         data: updatedUser,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to patch user data"));
+      return next(new BadRequestError());
     }
   };
 }
@@ -119,7 +123,7 @@ export function updatePassword() {
         data: updatedUser,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to update password"));
+      return next(new BadRequestError());
     }
   };
 }

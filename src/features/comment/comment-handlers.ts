@@ -1,7 +1,7 @@
 import { IJsonResponse } from "../../utils/json-response";
 import * as commentService from "./comment-service";
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../../utils/app-error";
+import { BadRequestError, InternalServerError, NotFoundError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
 import { IFullQuery } from "../../utils/parse-query";
 
@@ -17,7 +17,7 @@ export function getAllComments() {
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.INTERNAL_SERVER_ERROR, "Something went wrong"));
+      next(new InternalServerError());
     }
   };
 }
@@ -40,7 +40,7 @@ export function getOneComment() {
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.NOT_FOUND, "Not found"));
+      next(new NotFoundError());
     }
   };
 }
@@ -61,7 +61,7 @@ export function createComment() {
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to create comment"));
+      next(new BadRequestError("Failed to create comment"));
     }
   };
 }
@@ -79,7 +79,7 @@ export function updateComment() {
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to update comment"));
+      next(new BadRequestError("Failed to update comment"));
     }
   };
 }
@@ -98,7 +98,7 @@ export function deleteComment() {
         data: null,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to delete comment"));
+      next(new BadRequestError("Failed to delete comment"));
     }
   };
 }

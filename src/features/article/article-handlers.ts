@@ -1,7 +1,7 @@
 import { IJsonResponse } from "../../utils/json-response";
 import * as articleService from "./article-service";
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../../utils/app-error";
+import { BadRequestError, InternalServerError, NotFoundError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
 import { IFullQuery } from "../../utils/parse-query";
 
@@ -17,7 +17,7 @@ export function getAllArticles() {
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.INTERNAL_SERVER_ERROR, "Something went wrong"));
+      next(new InternalServerError());
     }
   };
 }
@@ -40,7 +40,7 @@ export function getOneArticle() {
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.NOT_FOUND, "Not found"));
+      next(new NotFoundError());
     }
   };
 }
@@ -61,7 +61,7 @@ export function createArticle() {
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to create article"));
+      next(new BadRequestError());
     }
   };
 }
@@ -79,7 +79,7 @@ export function updateArticle() {
         data: result,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to update article"));
+      next(new BadRequestError());
     }
   };
 }
@@ -98,7 +98,7 @@ export function deleteArticle() {
         data: null,
       });
     } catch (err) {
-      next(new AppError(HttpStatusCode.BAD_REQUEST, "Failed to delete article"));
+      next(new BadRequestError());
     }
   };
 }
