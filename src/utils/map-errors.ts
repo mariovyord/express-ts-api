@@ -1,23 +1,17 @@
-import { MongooseError } from "mongoose";
-
-/**
- * @param {*} err
- * @returns {Array|string}
- */
-function mapErrors(err: any) {
-  if (Array.isArray(err)) {
-    return err;
+function mapErrors(err: any): string {
+  if (err.name === "ValidationError") {
+    return Object.values(err.errors)
+      .map((value: { message: string }) => value.message)
+      .join(", ");
+  } else if (Array.isArray(err)) {
+    return err.join(", ");
   } else if (typeof err === "string") {
-    return [err];
+    return err;
   } else if (err.message) {
-    return [err.message];
+    return mapErrors(err.message);
   } else {
-    return ["Request error"];
+    return "Something went wrong";
   }
 }
-
-// else if (err instanceof MongooseError) {
-//   // return Object.values(err.errors).map((e) => e.message);
-// }
 
 export default mapErrors;

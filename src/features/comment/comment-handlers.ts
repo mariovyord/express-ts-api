@@ -17,7 +17,7 @@ export function getAllComments() {
         data: result,
       });
     } catch (err) {
-      next(new InternalServerError());
+      next(new InternalServerError(err));
     }
   };
 }
@@ -40,7 +40,7 @@ export function getOneComment() {
         data: result,
       });
     } catch (err) {
-      next(new NotFoundError());
+      next(new NotFoundError(err));
     }
   };
 }
@@ -61,7 +61,7 @@ export function createComment() {
         data: result,
       });
     } catch (err) {
-      next(new BadRequestError("Failed to create comment"));
+      next(new BadRequestError(err));
     }
   };
 }
@@ -79,7 +79,7 @@ export function updateComment() {
         data: result,
       });
     } catch (err) {
-      next(new BadRequestError("Failed to update comment"));
+      next(new BadRequestError(err));
     }
   };
 }
@@ -98,7 +98,7 @@ export function deleteComment() {
         data: null,
       });
     } catch (err) {
-      next(new BadRequestError("Failed to delete comment"));
+      next(new BadRequestError(err));
     }
   };
 }

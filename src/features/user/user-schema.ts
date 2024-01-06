@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import { IUser } from "./user-types";
+import beautifyUnique from "mongoose-beautiful-unique-validation";
 
 Schema.Types.String.set("trim", true);
 
@@ -41,6 +42,8 @@ userSchema.pre("save", async function (next) {
   }
   next();
 });
+
+userSchema.plugin(beautifyUnique);
 
 function noBlacklistedChars(params: string) {
   return /\W/.test(params) === false;

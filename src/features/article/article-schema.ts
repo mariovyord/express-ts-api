@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types, model } from "mongoose";
 import { IArticle } from "./article-types";
+import beautifyUnique from "mongoose-beautiful-unique-validation";
 
 mongoose.Schema.Types.String.set("trim", true);
 
@@ -21,6 +22,8 @@ const articleSchema = new Schema<IArticle>(
   },
   { timestamps: true }
 );
+
+articleSchema.plugin(beautifyUnique);
 
 const Article = model("Article", articleSchema);
 

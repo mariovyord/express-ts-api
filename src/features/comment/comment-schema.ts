@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types, model } from "mongoose";
 import { IComment } from "./comment-types";
+import beautifyUnique from "mongoose-beautiful-unique-validation";
 
 mongoose.Schema.Types.String.set("trim", true);
 
@@ -26,6 +27,8 @@ const commentSchema = new Schema<IComment>(
   },
   { timestamps: true }
 );
+
+commentSchema.plugin(beautifyUnique);
 
 const Comment = model("Comment", commentSchema);
 
