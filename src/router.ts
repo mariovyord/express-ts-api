@@ -1,10 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
 import { HttpStatusCode } from "./utils/http-status-code";
 import { IJsonResponse } from "./utils/json-response";
-import userRouter from "./features/user/user-router";
-import articleRouter from "./features/article/article-router";
-import commentRouter from "./features/comment/comment-router";
-import statusRouter from "./features/status/status-router";
+import userModule from "./features/user";
+import articleModule from "./features/article";
+import commentModule from "./features/comment";
+import statusModule from "./features/status";
 import { NotFoundError } from "./utils/app-error";
 
 const router = express.Router();
@@ -25,13 +25,13 @@ function ping(req: Request, res: Response<IJsonResponse>) {
  * API
  */
 router.get("/api/ping", ping);
-router.use(getApiSubRoute("v1", "user"), userRouter);
-router.use(getApiSubRoute("v1", "articles"), articleRouter);
-router.use(getApiSubRoute("v1", "comments"), commentRouter);
+router.use(getApiSubRoute("v1", "user"), userModule);
+router.use(getApiSubRoute("v1", "articles"), articleModule);
+router.use(getApiSubRoute("v1", "comments"), commentModule);
 /**
  * Pages
  */
-router.use("/status", statusRouter);
+router.use("/status", statusModule);
 
 router.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(new NotFoundError());
