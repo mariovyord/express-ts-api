@@ -2,12 +2,13 @@ import jwt from "jsonwebtoken";
 import getConfig from "../../config/get-config";
 import { IUserLocal, ISignUpUserData, UserDto, IUpdateUserData } from "./user-types";
 import * as userQueries from "./user-queries";
+import { BadRequestError, InternalServerError, NotFoundError, UnauthorizedError } from "../../utils/app-error";
 
 export async function signUp(userData: ISignUpUserData): Promise<[string, UserDto]> {
   const existing = await userQueries.findOneByUsername(userData.username);
 
   if (existing) {
-    throw new Error("Username already exists");
+    throw new BadRequestError("Username already exists");
   }
 
   const user = await userQueries.createUser(userData);
@@ -20,7 +21,7 @@ export async function signIn(username: string, password: string): Promise<[strin
   const user = await userQueries.findOneByPassword(username, password);
 
   if (!user) {
-    throw new Error("Incorrect username or password");
+    throw new UnauthorizedError("Incorrect username or password");
   }
 
   const token = await createToken(user.id);
@@ -32,7 +33,7 @@ async function createToken(id: string) {
   const config = getConfig();
 
   if (!config.JWT_SECRET) {
-    throw new Error("Internal server error");
+    throw new InternalServerError();
   }
 
   return jwt.sign({ id }, `${config.JWT_SECRET}`, {
@@ -44,7 +45,7 @@ export async function getUser(userData: IUserLocal): Promise<UserDto> {
   const user = await userQueries.findOneById(userData.id);
 
   if (!user) {
-    throw new Error("Not found");
+    throw new NotFoundError();
   }
 
   return new UserDto(user);
@@ -56,7 +57,7 @@ export async function updateUser(userId: string, userData: Partial<IUpdateUserDa
   const user = await userQueries.findOneById(userId);
 
   if (user === null || user._id.toString() !== userId) {
-    throw new Error("Failed to update user");
+    throw new UnauthorizedError();
   }
 
   for (const key of ALLOWED_UPDATE_FIELDS) {
@@ -75,13 +76,13 @@ export async function updatePassword(userId: string, oldPassword: string, newPas
   const user = await userQueries.findOneById(userId);
 
   if (!user) {
-    throw new Error("User does not exist");
+    throw new NotFoundError();
   }
 
   const match = await user.comparePassword(oldPassword);
 
   if (!match) {
-    throw new Error("Incorrect password");
+    throw new UnauthorizedError();
   }
 
   user.password = newPassword;

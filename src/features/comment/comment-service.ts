@@ -1,3 +1,4 @@
+import { NotFoundError, UnauthorizedError } from "../../utils/app-error";
 import { IFullQuery, parseQueryToMongoParams } from "../../utils/parse-query";
 import * as commentQueries from "./comment-queries";
 import { CommentDto, ICreateCommentData, IPatchCommentData } from "./comment-types";
@@ -29,7 +30,7 @@ export async function getOneComment(id: string, query: any): Promise<CommentDto 
   const comment = await commentQueries.findCommentById(id, { populate, limitPopulate });
 
   if (!comment) {
-    throw new Error("Not found");
+    throw new NotFoundError();
   }
 
   return new CommentDto(comment);
@@ -45,8 +46,8 @@ const ALLOWED_UPDATE_FIELDS = ["content"];
 export async function updateComment(id: string, userId: string, data: IPatchCommentData): Promise<CommentDto> {
   const comment = await commentQueries.findCommentById(id);
 
-  if (comment === null) throw new Error("Comment not found");
-  if (comment.owner.toString() !== userId) throw new Error("Only owners can update commet");
+  if (comment === null) throw new NotFoundError();
+  if (comment.owner.toString() !== userId) throw new UnauthorizedError();
 
   for (const key of ALLOWED_UPDATE_FIELDS) {
     if (key in data) {
@@ -62,8 +63,8 @@ export async function updateComment(id: string, userId: string, data: IPatchComm
 export async function deleteComment(id: string, userId: string): Promise<void> {
   const comment = await commentQueries.findCommentById(id);
 
-  if (!comment) throw new Error("Comment does not exist");
-  if (comment.owner.toString() !== userId) throw new Error("Only owners can delete comments");
+  if (!comment) throw new NotFoundError();
+  if (comment.owner.toString() !== userId) throw new UnauthorizedError();
 
   await commentQueries.deleteCommentById(id);
 }

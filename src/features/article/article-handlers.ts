@@ -31,7 +31,7 @@ export function getOneArticle() {
       const result = await articleService.getOne(id, query);
 
       if (!result) {
-        throw new Error("Not found");
+        throw new NotFoundError();
       }
 
       return res.json({

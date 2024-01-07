@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import { IUser } from "./user-types";
 import beautifyUnique from "mongoose-beautiful-unique-validation";
+import { BadRequestError } from "../../utils/app-error";
 
 Schema.Types.String.set("trim", true);
 
@@ -35,8 +36,7 @@ userSchema.pre("save", function (next) {
 
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
-    if (!noBlacklistedChars(this.password))
-      throw new Error("Password should not contain whitespace or special symbols");
+    if (!noBlacklistedChars(this.password)) throw new BadRequestError("Password should not contain invalid characters");
 
     this.password = await bcrypt.hash(this.password, 10);
   }

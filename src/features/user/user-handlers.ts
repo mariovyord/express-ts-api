@@ -1,7 +1,7 @@
 import { IJsonResponse } from "../../utils/json-response";
 import * as userService from "./user-service";
 import { NextFunction, Request, Response } from "express";
-import { BadRequestError } from "../../utils/app-error";
+import { BadRequestError, UnauthorizedError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
 import { IUserLocal, UserDto } from "./user-types";
 
@@ -86,7 +86,7 @@ export function updateUser() {
       const user = res.locals.user as IUserLocal;
 
       if (user.id !== requestUserId) {
-        throw new Error("Only owners can update user data");
+        throw new UnauthorizedError();
       }
 
       const userData = req.body;
@@ -112,7 +112,7 @@ export function updatePassword() {
       const requestedUserId = req.params.id;
 
       if (user.id !== requestedUserId) {
-        throw new Error("Invalid user");
+        throw new UnauthorizedError();
       }
 
       const updatedUser = await userService.updatePassword(user.id, oldPassword, newPassword);

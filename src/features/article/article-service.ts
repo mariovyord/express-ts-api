@@ -1,3 +1,4 @@
+import { NotFoundError, UnauthorizedError } from "../../utils/app-error";
 import { IFullQuery, parseQueryToMongoParams } from "../../utils/parse-query";
 import * as articleQueries from "./article-queries";
 import { ArticleDto, ICreateArticleData, IPatchArticleData } from "./article-types";
@@ -29,7 +30,7 @@ export async function getOne(id: string, query: any): Promise<ArticleDto | null>
   const article = await articleQueries.findArticleById(id, { populate, limitPopulate });
 
   if (!article) {
-    throw new Error("Not found");
+    throw new NotFoundError();
   }
 
   return new ArticleDto(article);
@@ -45,8 +46,8 @@ const ALLOWED_UPDATE_FIELDS = ["title", "content"];
 export async function update(id: string, userId: string, data: IPatchArticleData): Promise<ArticleDto> {
   const article = await articleQueries.findArticleById(id);
 
-  if (article === null) throw new Error("Article not found");
-  if (article.owner.toString() !== userId) throw new Error("Only owners can update article");
+  if (article === null) throw new NotFoundError();
+  if (article.owner.toString() !== userId) throw new UnauthorizedError();
 
   for (const key of ALLOWED_UPDATE_FIELDS) {
     if (key in data) {
@@ -62,8 +63,8 @@ export async function update(id: string, userId: string, data: IPatchArticleData
 export async function remove(id: string, userId: string): Promise<void> {
   const article = await articleQueries.findArticleById(id);
 
-  if (!article) throw new Error("Article does not exist");
-  if (article.owner.toString() !== userId) throw new Error("Only owners can delete articles");
+  if (!article) throw new NotFoundError();
+  if (article.owner.toString() !== userId) throw new UnauthorizedError();
 
   await articleQueries.deleteArticleById(id);
 }
