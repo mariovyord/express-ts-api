@@ -1,5 +1,5 @@
 import app from "./app";
-import db from "./config/db";
+import { AppDataSource } from "./config/db";
 import getConfig from "./config/get-config";
 import dotenv from "dotenv";
 import { AppError } from "./utils/app-error";
@@ -12,12 +12,16 @@ dotenv.config({ path: `.env.local`, override: true });
 
 const config = getConfig();
 const port: number = config.PORT ? parseInt(config.PORT) : 5000;
-const dbConnectionString = config.CONNECTION_STRING || "mongodb://localhost:27017/express-template";
 
 (async function () {
-  await db(dbConnectionString);
-
-  app.listen(port, () => console.log(`⚡️ Server is listening on port ${port}...`));
+  AppDataSource.initialize()
+    .then(async () => {
+      app.listen(port, () => console.log(`⚡️ Server is listening on port ${port}...`));
+    })
+    .catch((err) => {
+      console.error("Error connecting to database", err);
+      process.exit(1);
+    });
 })();
 
 // Uncaught exception and SIGTERM handling

@@ -1,21 +1,17 @@
 import { ObjectId } from "mongodb";
 import { IUser, UserDto } from "../user/user-types";
 import { isValidObjectId } from "mongoose";
+import { Article } from "./article-entity";
 
-export interface IArticle {
-  _id: ObjectId;
+export type ICreateArticleData = {
   title: string;
   content: string;
-  owner: ObjectId | IUser;
-  createdAt: Date;
-  updatedAt: Date;
-  estimatedDocumentCount: () => number;
-  count: () => number;
-}
+};
 
-export type ICreateArticleData = Pick<IArticle, "title" | "content">;
-
-export type IPatchArticleData = Pick<IArticle, "title" | "content">;
+export type IPutArticleData = {
+  title: string;
+  content: string;
+};
 
 /**
  * Represents a Public Article with limited information.
@@ -28,17 +24,17 @@ export class ArticleDto {
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(article: IArticle) {
-    this.id = article._id.toString();
+  constructor(article: Article) {
+    this.id = article.id;
     this.title = article.title;
     this.content = article.content;
-    this.createdAt = article.createdAt;
-    this.updatedAt = article.updatedAt;
+    this.createdAt = article.created_at;
+    this.updatedAt = article.updated_at;
 
-    if (isValidObjectId(article.owner)) {
-      this.owner = (article.owner as ObjectId).toString();
+    if (typeof article.owner === "string") {
+      this.owner = article.owner;
     } else {
-      this.owner = new UserDto(article.owner as IUser);
+      this.owner = new UserDto(article.owner);
     }
   }
 }

@@ -1,33 +1,29 @@
 import { NotFoundError, UnauthorizedError } from "../../utils/app-error";
-import { IFullQuery, parseQueryToMongoParams } from "../../utils/parse-query";
-import * as articleQueries from "./article-queries";
-import { ArticleDto, ICreateArticleData, IPatchArticleData } from "./article-types";
+import { IFullQuery, buildQuery } from "../../utils/build-query";
+import { Article } from "./article-entity";
+import { articleRepository } from "./article-repository";
+import { ArticleDto, ICreateArticleData, IPutArticleData } from "./article-types";
 
-export async function getAll(query: IFullQuery): Promise<ArticleDto[] | number> {
-  const parsedQuery = parseQueryToMongoParams(query);
+export async function getAll(query: IFullQuery): Promise<ArticleDto[]> {
+  const articles = await buildQuery(articleRepository(), query);
 
-  if (parsedQuery.count) {
-    return articleQueries.countDocumentsByQuery(parsedQuery);
+  if (!articles) {
+    return [];
   }
-
-  const articles = await articleQueries.findArticlesByQuery(parsedQuery);
 
   return articles.map((x) => new ArticleDto(x));
 }
 
-export async function getOne(id: string, query: any): Promise<ArticleDto | null> {
-  let populate = "";
-  let limitPopulate = "";
+export async function getOne(id: string, query: any): Promise<ArticleDto> {
+  let queryBuilder = articleRepository().createQueryBuilder("entity");
+
+  queryBuilder = queryBuilder.where("entity.id = :id", { id });
 
   if (query && query.populate) {
-    populate += query.populate;
-
-    if (query.populate.includes("owner")) {
-      limitPopulate += "username firstName lastName";
-    }
+    queryBuilder = queryBuilder.leftJoinAndSelect(`entity.${query.populate}`, query.populate);
   }
 
-  const article = await articleQueries.findArticleById(id, { populate, limitPopulate });
+  const article = await queryBuilder.getOne();
 
   if (!article) {
     throw new NotFoundError();
@@ -36,15 +32,23 @@ export async function getOne(id: string, query: any): Promise<ArticleDto | null>
   return new ArticleDto(article);
 }
 
-export async function create(data: ICreateArticleData): Promise<ArticleDto> {
-  const article = await articleQueries.createArticle(data);
+export async function create(data: ICreateArticleData & { owner: string }): Promise<ArticleDto> {
+  const article = new Article();
+  article.content = data.content;
+  article.title = data.title;
+  article.owner = data.owner;
+  article.created_at = new Date();
+  article.updated_at = new Date();
+
+  await articleRepository().save(article);
+
   return new ArticleDto(article);
 }
 
 const ALLOWED_UPDATE_FIELDS = ["title", "content"];
 
-export async function update(id: string, userId: string, data: IPatchArticleData): Promise<ArticleDto> {
-  const article = await articleQueries.findArticleById(id);
+export async function update(id: string, userId: string, data: IPutArticleData): Promise<ArticleDto> {
+  const article = await articleRepository().findOneBy({ id });
 
   if (article === null) throw new NotFoundError();
   if (article.owner.toString() !== userId) throw new UnauthorizedError();
@@ -55,16 +59,18 @@ export async function update(id: string, userId: string, data: IPatchArticleData
     }
   }
 
-  await articleQueries.saveUpdatedArticle(article);
+  article.updated_at = new Date();
+
+  await articleRepository().save(article);
 
   return new ArticleDto(article);
 }
 
 export async function remove(id: string, userId: string): Promise<void> {
-  const article = await articleQueries.findArticleById(id);
+  const article = await articleRepository().findOneBy({ id });
 
   if (!article) throw new NotFoundError();
-  if (article.owner.toString() !== userId) throw new UnauthorizedError();
+  if (article.owner !== userId) throw new UnauthorizedError();
 
-  await articleQueries.deleteArticleById(id);
+  await articleRepository().remove(article);
 }

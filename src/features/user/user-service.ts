@@ -1,26 +1,54 @@
 import jwt from "jsonwebtoken";
 import getConfig from "../../config/get-config";
 import { IUserLocal, ISignUpUserData, UserDto, IUpdateUserData } from "./user-types";
-import * as userQueries from "./user-queries";
 import { BadRequestError, InternalServerError, NotFoundError, UnauthorizedError } from "../../utils/app-error";
+import { User } from "./user-entity";
+import { userRepository } from "./user-repository";
 
 export async function signUp(userData: ISignUpUserData): Promise<[string, UserDto]> {
-  const existing = await userQueries.findOneByUsername(userData.username);
+  if (!userData.username) {
+    throw new BadRequestError();
+  }
+
+  const existing = await userRepository().findOneBy({
+    username: userData.username.toLowerCase(),
+  });
 
   if (existing) {
     throw new BadRequestError("Username already exists");
   }
 
-  const user = await userQueries.createUser(userData);
+  const user = new User();
+  user.username = userData.username;
+  user.first_name = userData.firstName;
+  user.last_name = userData.lastName;
+  user.setPassword(userData.password);
+  user.created_at = new Date();
+  user.updated_at = new Date();
+
+  await userRepository().save(user);
+
   const token = await createToken(user.id);
 
   return [token, new UserDto(user)];
 }
 
 export async function signIn(username: string, password: string): Promise<[string, UserDto]> {
-  const user = await userQueries.findOneByPassword(username, password);
+  if (!username || !password) {
+    throw new BadRequestError();
+  }
+
+  const user = await userRepository().findOneBy({
+    username: username.toLowerCase(),
+  });
 
   if (!user) {
+    throw new UnauthorizedError();
+  }
+
+  const matchingPassword = await user.comparePassword(password);
+
+  if (!matchingPassword) {
     throw new UnauthorizedError("Incorrect username or password");
   }
 
@@ -42,8 +70,7 @@ async function createToken(id: string) {
 }
 
 export async function getUser(userData: IUserLocal): Promise<UserDto> {
-  const user = await userQueries.findOneById(userData.id);
-
+  const user = await userRepository().findOneBy({ id: userData.id });
   if (!user) {
     throw new NotFoundError();
   }
@@ -54,9 +81,9 @@ export async function getUser(userData: IUserLocal): Promise<UserDto> {
 const ALLOWED_UPDATE_FIELDS = ["firstName", "lastName"];
 
 export async function updateUser(userId: string, userData: Partial<IUpdateUserData>): Promise<UserDto> {
-  const user = await userQueries.findOneById(userId);
+  const user = await userRepository().findOneBy({ id: userId });
 
-  if (user === null || user._id.toString() !== userId) {
+  if (!user || user.id !== userId) {
     throw new UnauthorizedError();
   }
 
@@ -66,14 +93,15 @@ export async function updateUser(userId: string, userData: Partial<IUpdateUserDa
     }
   }
 
-  // mongoose will auto-update updatedAt field
-  await userQueries.saveUpdatedUser(user);
+  user.updated_at = new Date();
+
+  await userRepository().save(user);
 
   return new UserDto(user);
 }
 
 export async function updatePassword(userId: string, oldPassword: string, newPassword: string) {
-  const user = await userQueries.findOneById(userId);
+  const user = await userRepository().findOneBy({ id: userId });
 
   if (!user) {
     throw new NotFoundError();
@@ -85,9 +113,11 @@ export async function updatePassword(userId: string, oldPassword: string, newPas
     throw new UnauthorizedError();
   }
 
-  user.password = newPassword;
+  user.setPassword(newPassword);
 
-  await userQueries.saveUpdatedUser(user);
+  user.updated_at = new Date();
+
+  await userRepository().save(user);
 
   return user;
 }

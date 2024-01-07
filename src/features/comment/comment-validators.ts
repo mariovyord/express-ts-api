@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { ICreateCommentData, IPatchCommentData } from "./comment-types";
+import { ICreateCommentData, IPutCommentData } from "./comment-types";
 
 export const commentCreateSchema = Joi.object<ICreateCommentData>().keys({
   content: Joi.string().required().min(3).max(600).trim(),
@@ -7,6 +7,6 @@ export const commentCreateSchema = Joi.object<ICreateCommentData>().keys({
   article: Joi.string().required().trim(),
 });
 
-export const commentPatchSchema = Joi.object<IPatchCommentData>().keys({
+export const commentPatchSchema = Joi.object<IPutCommentData>().keys({
   content: Joi.string().required().min(3).max(600).trim(),
 });

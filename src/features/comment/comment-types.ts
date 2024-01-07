@@ -1,20 +1,13 @@
 import { ObjectId, WithId } from "mongodb";
 import { isValidObjectId } from "mongoose";
 import { IUser, UserDto } from "../user/user-types";
+import { Comment } from "./comment-entity";
 
-export interface IComment {
-  _id: ObjectId;
+export type ICreateCommentData = { content: string; parent: string; article: string };
+
+export type IPutCommentData = {
   content: string;
-  owner: ObjectId | IUser;
-  parent: ObjectId;
-  article: ObjectId;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export type ICreateCommentData = Pick<IComment, "content" | "parent" | "article">;
-
-export type IPatchCommentData = Pick<IComment, "content">;
+};
 
 /**
  * Represents a Public Comment with limited information.
@@ -28,18 +21,18 @@ export class CommentDto {
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(comment: WithId<IComment>) {
-    this.id = comment._id.toString();
+  constructor(comment: Comment) {
+    this.id = comment.id;
     this.content = comment.content;
-    this.parent = comment.parent?.toString();
-    this.article = comment.article.toString();
-    this.createdAt = comment.createdAt;
-    this.updatedAt = comment.updatedAt;
+    this.parent = comment.parent;
+    this.article = comment.article;
+    this.createdAt = comment.created_at;
+    this.updatedAt = comment.updated_at;
 
-    if (isValidObjectId(comment.owner)) {
-      this.owner = (comment.owner as ObjectId).toString();
+    if (typeof comment.owner === "string") {
+      this.owner = comment.owner;
     } else {
-      this.owner = new UserDto(comment.owner as IUser);
+      this.owner = new UserDto(comment.owner);
     }
   }
 }

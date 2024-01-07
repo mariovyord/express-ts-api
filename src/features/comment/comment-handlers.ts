@@ -3,7 +3,7 @@ import * as commentService from "./comment-service";
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError, InternalServerError, NotFoundError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
-import { IFullQuery } from "../../utils/parse-query";
+import { IFullQuery } from "../../utils/build-query";
 
 export function getAllComments() {
   return async (req: Request<{}, {}, {}, IFullQuery>, res: Response<IJsonResponse>, next: NextFunction) => {

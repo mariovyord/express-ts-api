@@ -1,4 +1,5 @@
 import { ObjectId } from "mongodb";
+import { User } from "./user-entity";
 
 export interface IUser {
   _id: ObjectId;
@@ -39,12 +40,12 @@ export class UserDto {
   createdAt: Date;
   updatedAt: Date;
 
-  constructor(user: IUser) {
-    this.id = user._id.toString();
+  constructor(user: User) {
+    this.id = user.id;
     this.username = user.username;
-    this.firstName = user.firstName;
-    this.lastName = user.lastName;
-    this.createdAt = user.createdAt;
-    this.updatedAt = user.updatedAt;
+    this.firstName = user.first_name;
+    this.lastName = user.last_name;
+    this.createdAt = user.created_at;
+    this.updatedAt = user.updated_at;
   }
 }
