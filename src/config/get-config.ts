@@ -1,10 +1,3 @@
-import dotenv from "dotenv";
-
-/**
- * Load enviroment variables
- */
-dotenv.config();
-
 export function getConfig() {
   return {
     NODE_ENV: process.env.NODE_ENV,
@@ -18,5 +11,6 @@ export function getConfig() {
     DB_PORT: process.env.DB_PORT,
     DB_PASSWORD: process.env.DB_PASSWORD,
     DB_USERNAME: process.env.DB_USERNAME,
+    LOGGING: process.env.DB_LOGGING,
   };
 }
