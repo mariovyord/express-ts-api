@@ -1,33 +1,30 @@
 import supertest, { SuperTest, Test } from "supertest";
 import app from "../../src/app";
-import mongoose from "mongoose";
-import { testConnectionString } from "../test-utils";
+import { DataSource } from "typeorm";
+import { initTestDataSource } from "../test-utils";
 
 const url = "/api/v1/user/signin";
+let db: DataSource;
 
 describe(`${url}`, () => {
   let agent: SuperTest<Test>;
 
   beforeAll(async () => {
-    require("dotenv").config();
+    db = await initTestDataSource();
     agent = supertest(app);
 
-    return mongoose.connect(testConnectionString).then(async () => {
-      // signup a user
-      return await agent
-        .post("/api/v1/user/signup")
-        .set("Content-Type", "application/json")
-        .send({
-          username: "user",
-          firstName: "User",
-          lastName: "Useroff",
-          password: "123123",
-        });
+    // signup a user
+    return await agent.post("/api/v1/user/signup").set("Content-Type", "application/json").send({
+      username: "user",
+      firstName: "User",
+      lastName: "Useroff",
+      password: "123123",
     });
   });
+
   afterAll((done) => {
-    mongoose.connection.dropDatabase().then(() => {
-      mongoose.connection.close();
+    db.dropDatabase().then(() => {
+      db.destroy();
       done();
     });
   });

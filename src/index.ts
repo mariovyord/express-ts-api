@@ -1,6 +1,6 @@
 import app from "./app";
 import { AppDataSource } from "./config/db";
-import getConfig from "./config/get-config";
+import { getConfig } from "./config/get-config";
 import { AppError } from "./utils/app-error";
 
 const config = getConfig();

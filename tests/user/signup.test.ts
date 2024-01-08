@@ -1,23 +1,24 @@
-import mongoose from "mongoose";
 import supertest, { SuperTest, Test } from "supertest";
 import app from "../../src/app";
-import { testConnectionString } from "../test-utils";
+import { DataSource } from "typeorm";
+import { initTestDataSource } from "../test-utils";
+import { User } from "../../src/features/user/user-entity";
+import * as config from "../../src/config/get-config";
 
 const url = "/api/v1/user/signup";
+let db: DataSource;
 
 describe(`${url}`, () => {
   let agent: SuperTest<Test>;
 
   beforeAll(async () => {
-    require("dotenv").config();
+    db = await initTestDataSource();
     agent = supertest(app);
-
-    await mongoose.connect(testConnectionString);
   });
 
   afterAll((done) => {
-    mongoose.connection.dropDatabase().then(() => {
-      mongoose.connection.close();
+    db.dropDatabase().then(() => {
+      db.destroy();
       done();
     });
   });
@@ -76,9 +77,7 @@ describe(`${url}`, () => {
       })
       .expect(400);
 
-    expect(test.body.message).toBe(
-      '"username" must only contain alpha-numeric characters'
-    );
+    expect(test.body.message).toBe('"username" must only contain alpha-numeric characters');
     expect(test.body.data).toBe(null);
     expect(test.body.code).toBe(400);
   });

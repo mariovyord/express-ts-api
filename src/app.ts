@@ -5,7 +5,7 @@ import router from "./router";
 import path from "path";
 import handleErrors from "./middleware/error-middleware";
 import loggerMiddleware from "./middleware/logger-middleware";
-import getConfig from "./config/get-config";
+import { getConfig } from "./config/get-config";
 import * as swaggerDoc from "./swagger.json";
 import swagger from "swagger-ui-express";
 import helmet from "helmet";

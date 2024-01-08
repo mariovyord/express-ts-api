@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { InternalServerError, UnauthorizedError } from "../utils/app-error";
-import getConfig from "../config/get-config";
+import { getConfig } from "../config/get-config";
 import { IUserLocal } from "../features/user/user-types";
 
 const authenticateTokenMiddleware = () => (req: Request, res: Response, next: NextFunction) => {

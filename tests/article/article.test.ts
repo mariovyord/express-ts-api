@@ -1,7 +1,7 @@
 import supertest, { SuperTest, Test } from "supertest";
 import app from "../../src/app";
-import mongoose from "mongoose";
-import { testConnectionString } from "../test-utils";
+import { initTestDataSource } from "../test-utils";
+import { DataSource } from "typeorm";
 
 const url = "/api/v1/articles";
 const mockUser = {
@@ -10,6 +10,8 @@ const mockUser = {
   lastName: "Useroff",
   password: "123123",
 };
+
+let db: DataSource;
 
 describe(`${url}`, () => {
   let agent: SuperTest<Test>;
@@ -24,19 +26,16 @@ describe(`${url}`, () => {
   beforeAll(async () => {
     require("dotenv").config();
 
-    await mongoose.connect(testConnectionString);
+    db = await initTestDataSource();
 
     agent = supertest(app);
 
-    await agent
-      .post("/api/v1/user/signup")
-      .set("Content-Type", "application/json")
-      .send(mockUser);
+    await agent.post("/api/v1/user/signup").set("Content-Type", "application/json").send(mockUser);
   });
 
   afterAll((done) => {
-    mongoose.connection.dropDatabase().then(() => {
-      mongoose.connection.close();
+    db.dropDatabase().then(() => {
+      db.destroy();
       done();
     });
   });

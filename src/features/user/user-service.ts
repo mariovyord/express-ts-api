@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import getConfig from "../../config/get-config";
+import { getConfig } from "../../config/get-config";
 import { IUserLocal, ISignUpUserData, UserDto, IUpdateUserData } from "./user-types";
 import { BadRequestError, InternalServerError, NotFoundError, UnauthorizedError } from "../../utils/app-error";
 import { User } from "./user-entity";
