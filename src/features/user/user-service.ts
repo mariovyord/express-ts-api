@@ -3,14 +3,14 @@ import getConfig from "../../config/get-config";
 import { IUserLocal, ISignUpUserData, UserDto, IUpdateUserData } from "./user-types";
 import { BadRequestError, InternalServerError, NotFoundError, UnauthorizedError } from "../../utils/app-error";
 import { User } from "./user-entity";
-import { userRepository } from "./user-repository";
+import { getUserRepository } from "./user-repository";
 
 export async function signUp(userData: ISignUpUserData): Promise<[string, UserDto]> {
   if (!userData.username) {
     throw new BadRequestError();
   }
 
-  const existing = await userRepository().findOneBy({
+  const existing = await getUserRepository().findOneBy({
     username: userData.username.toLowerCase(),
   });
 
@@ -26,7 +26,7 @@ export async function signUp(userData: ISignUpUserData): Promise<[string, UserDt
   user.created_at = new Date();
   user.updated_at = new Date();
 
-  await userRepository().save(user);
+  await getUserRepository().save(user);
 
   const token = await createToken(user.id);
 
@@ -38,7 +38,7 @@ export async function signIn(username: string, password: string): Promise<[strin
     throw new BadRequestError();
   }
 
-  const user = await userRepository().findOneBy({
+  const user = await getUserRepository().findOneBy({
     username: username.toLowerCase(),
   });
 
@@ -70,7 +70,7 @@ async function createToken(id: string) {
 }
 
 export async function getUser(userData: IUserLocal): Promise<UserDto> {
-  const user = await userRepository().findOneBy({ id: userData.id });
+  const user = await getUserRepository().findOneBy({ id: userData.id });
   if (!user) {
     throw new NotFoundError();
   }
@@ -81,7 +81,7 @@ export async function getUser(userData: IUserLocal): Promise<UserDto> {
 const ALLOWED_UPDATE_FIELDS = ["firstName", "lastName"];
 
 export async function updateUser(userId: string, userData: Partial<IUpdateUserData>): Promise<UserDto> {
-  const user = await userRepository().findOneBy({ id: userId });
+  const user = await getUserRepository().findOneBy({ id: userId });
 
   if (!user || user.id !== userId) {
     throw new UnauthorizedError();
@@ -95,13 +95,13 @@ export async function updateUser(userId: string, userData: Partial<IUpdateUserDa
 
   user.updated_at = new Date();
 
-  await userRepository().save(user);
+  await getUserRepository().save(user);
 
   return new UserDto(user);
 }
 
 export async function updatePassword(userId: string, oldPassword: string, newPassword: string) {
-  const user = await userRepository().findOneBy({ id: userId });
+  const user = await getUserRepository().findOneBy({ id: userId });
 
   if (!user) {
     throw new NotFoundError();
@@ -117,7 +117,7 @@ export async function updatePassword(userId: string, oldPassword: string, newPas
 
   user.updated_at = new Date();
 
-  await userRepository().save(user);
+  await getUserRepository().save(user);
 
   return user;
 }

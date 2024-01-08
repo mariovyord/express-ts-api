@@ -1,11 +1,11 @@
 import { NotFoundError, UnauthorizedError } from "../../utils/app-error";
 import { IFullQuery, buildQuery } from "../../utils/build-query";
 import { Comment } from "./comment-entity";
-import { commentRepository } from "./comment-repository";
+import { getCommentRepository } from "./comment-repository";
 import { CommentDto, ICreateCommentData, IPutCommentData } from "./comment-types";
 
 export async function getAllComments(query: IFullQuery): Promise<CommentDto[] | number> {
-  const comments = await buildQuery(commentRepository(), query);
+  const comments = await buildQuery(getCommentRepository(), query);
 
   if (!comments) {
     return [];
@@ -15,7 +15,7 @@ export async function getAllComments(query: IFullQuery): Promise<CommentDto[] | 
 }
 
 export async function getOneComment(id: string, query: any): Promise<CommentDto | null> {
-  let queryBuilder = commentRepository().createQueryBuilder("entity");
+  let queryBuilder = getCommentRepository().createQueryBuilder("entity");
 
   queryBuilder = queryBuilder.where("entity.id = :id", { id });
 
@@ -41,7 +41,7 @@ export async function createComment(data: ICreateCommentData & { owner: string }
   comment.updated_at = new Date();
   comment.owner = data.owner;
 
-  await commentRepository().save(comment);
+  await getCommentRepository().save(comment);
 
   return new CommentDto(comment);
 }
@@ -49,7 +49,7 @@ export async function createComment(data: ICreateCommentData & { owner: string }
 const ALLOWED_UPDATE_FIELDS = ["content"];
 
 export async function updateComment(id: string, userId: string, data: IPutCommentData): Promise<CommentDto> {
-  const comment = await commentRepository().findOneBy({ id });
+  const comment = await getCommentRepository().findOneBy({ id });
 
   if (comment === null) throw new NotFoundError();
   if (comment.owner !== userId) throw new UnauthorizedError();
@@ -62,16 +62,16 @@ export async function updateComment(id: string, userId: string, data: IPutCommen
 
   comment.updated_at = new Date();
 
-  await commentRepository().save(comment);
+  await getCommentRepository().save(comment);
 
   return new CommentDto(comment);
 }
 
 export async function deleteComment(id: string, userId: string): Promise<void> {
-  const comment = await commentRepository().findOneBy({ id });
+  const comment = await getCommentRepository().findOneBy({ id });
 
   if (!comment) throw new NotFoundError();
   if (comment.owner !== userId) throw new UnauthorizedError();
 
-  await commentRepository().remove(comment);
+  await getCommentRepository().remove(comment);
 }

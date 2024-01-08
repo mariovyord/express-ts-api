@@ -1,14 +1,7 @@
 import app from "./app";
 import { AppDataSource } from "./config/db";
 import getConfig from "./config/get-config";
-import dotenv from "dotenv";
 import { AppError } from "./utils/app-error";
-
-/**
- * Load enviroment variables
- */
-dotenv.config();
-dotenv.config({ path: `.env.local`, override: true });
 
 const config = getConfig();
 const port: number = config.PORT ? parseInt(config.PORT) : 5000;
