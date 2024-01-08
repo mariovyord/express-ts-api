@@ -3,10 +3,7 @@ import dotenv from "dotenv";
 /**
  * Load enviroment variables
  */
-if (!process.env.NODE_ENV) {
-  dotenv.config();
-  dotenv.config({ path: `.env.local`, override: true });
-}
+dotenv.config();
 
 export function getConfig() {
   return {

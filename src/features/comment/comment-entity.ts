@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../user/user-entity";
 
 @Entity()
@@ -13,11 +13,11 @@ export class Comment {
   @JoinColumn()
   owner: string;
 
-  @OneToOne(() => Comment, { nullable: true })
+  @ManyToOne(() => Comment, { nullable: true })
   @JoinColumn()
   parent: string;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn()
   article: string;
 

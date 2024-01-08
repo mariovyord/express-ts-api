@@ -40,7 +40,7 @@ export function getOneArticle() {
         data: result,
       });
     } catch (err) {
-      next(new NotFoundError(err));
+      next(err);
     }
   };
 }
@@ -61,7 +61,7 @@ export function createArticle() {
         data: result,
       });
     } catch (err) {
-      next(new BadRequestError(err));
+      next(err);
     }
   };
 }
@@ -79,7 +79,7 @@ export function updateArticle() {
         data: result,
       });
     } catch (err) {
-      next(new BadRequestError(err));
+      next(err);
     }
   };
 }
@@ -98,7 +98,7 @@ export function deleteArticle() {
         data: null,
       });
     } catch (err) {
-      next(new BadRequestError(err));
+      next(err);
     }
   };
 }

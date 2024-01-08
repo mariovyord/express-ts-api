@@ -25,7 +25,7 @@ export function signUp() {
         data: user,
       });
     } catch (err) {
-      next(new BadRequestError(err));
+      next(err);
     }
   };
 }
@@ -42,7 +42,7 @@ export function signIn() {
         data: user,
       });
     } catch (err) {
-      next(new BadRequestError(err));
+      next(err);
     }
   };
 }
@@ -56,7 +56,7 @@ export function signOut() {
         data: null,
       });
     } catch (err) {
-      return next(new BadRequestError(err));
+      return next(err);
     }
   };
 }
@@ -74,7 +74,7 @@ export function getUserData() {
         data: userData,
       });
     } catch (err) {
-      return next(new BadRequestError(err));
+      return next(err);
     }
   };
 }
@@ -98,7 +98,7 @@ export function updateUser() {
         data: updatedUser,
       });
     } catch (err) {
-      return next(new BadRequestError(err));
+      return next(err);
     }
   };
 }
@@ -123,7 +123,7 @@ export function updatePassword() {
         data: updatedUser,
       });
     } catch (err) {
-      return next(new BadRequestError(err));
+      return next(err);
     }
   };
 }
