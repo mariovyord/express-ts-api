@@ -2,6 +2,8 @@
 
 Experimenting with patterns and technologies.
 
+Express, PostgreSQL, Docker
+
 ## **Response**
 
 ```js
