@@ -11,24 +11,26 @@ services:
     networks:
       - backend
     depends_on:
-      - mongo
+      - postgres_db
     env_file:
       - .env
     deploy:
       mode: replicated
       replicas: 1
 
-  mongo:
-    image: mongo:6.0.4
+  postgres_db:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123123
     ports:
-      - "27018:27017"
-    networks:
-      - backend
+      - "6543:5432"
     volumes:
-      - mongodata:/data/db
+      - postgres_db:/var/lib/postgresql/data
 
 volumes:
-  mongodata:
+  postgres_db:
     driver: local
 
 networks:

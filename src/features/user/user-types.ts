@@ -1,16 +1,4 @@
-import { ObjectId } from "mongodb";
 import { User } from "./user-entity";
-
-export interface IUser {
-  _id: ObjectId;
-  username: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  createdAt: Date;
-  updatedAt: Date;
-  comparePassword: (password: string) => Promise<boolean>;
-}
 
 export interface IUserLocal {
   id: string;

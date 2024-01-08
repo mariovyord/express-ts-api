@@ -1,6 +1,4 @@
-import { ObjectId, WithId } from "mongodb";
-import { isValidObjectId } from "mongoose";
-import { IUser, UserDto } from "../user/user-types";
+import { UserDto } from "../user/user-types";
 import { Comment } from "./comment-entity";
 
 export type ICreateCommentData = { content: string; parent: string; article: string };

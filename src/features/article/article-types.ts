@@ -1,6 +1,4 @@
-import { ObjectId } from "mongodb";
-import { IUser, UserDto } from "../user/user-types";
-import { isValidObjectId } from "mongoose";
+import { UserDto } from "../user/user-types";
 import { Article } from "./article-entity";
 
 export type ICreateArticleData = {
