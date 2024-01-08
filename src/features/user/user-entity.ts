@@ -28,8 +28,4 @@ export class User {
   public async comparePassword(password: string) {
     return bcrypt.compare(password, this.password);
   }
-
-  public async setPassword(password: string) {
-    this.password = await bcrypt.hash(password, 10);
-  }
 }

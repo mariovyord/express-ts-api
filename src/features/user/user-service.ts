@@ -4,6 +4,7 @@ import { IUserLocal, ISignUpUserData, UserDto, IUpdateUserData } from "./user-ty
 import { BadRequestError, InternalServerError, NotFoundError, UnauthorizedError } from "../../utils/app-error";
 import { User } from "./user-entity";
 import { getUserRepository } from "./user-repository";
+import bcrypt from "bcrypt";
 
 export async function signUp(userData: ISignUpUserData): Promise<[string, UserDto]> {
   if (!userData.username) {
@@ -22,7 +23,7 @@ export async function signUp(userData: ISignUpUserData): Promise<[string, UserDt
   user.username = userData.username;
   user.first_name = userData.firstName;
   user.last_name = userData.lastName;
-  user.setPassword(userData.password);
+  user.password = await bcrypt.hash(userData.password, 10);
   user.created_at = new Date();
   user.updated_at = new Date();
 
@@ -113,8 +114,7 @@ export async function updatePassword(userId: string, oldPassword: string, newPas
     throw new UnauthorizedError();
   }
 
-  user.setPassword(newPassword);
-
+  user.password = await bcrypt.hash(newPassword, 10);
   user.updated_at = new Date();
 
   await getUserRepository().save(user);
