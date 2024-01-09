@@ -1,3 +1,5 @@
+import { Repository } from "typeorm";
+
 export interface IFullQuery {
   where?: string | string[];
   sortBy?: string | string[];
@@ -7,8 +9,6 @@ export interface IFullQuery {
   select?: string | string[];
   count?: string;
 }
-
-import { Repository } from "typeorm";
 
 export interface IFullQuery {
   where?: string | string[];

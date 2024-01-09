@@ -1,7 +1,7 @@
 import { IJsonResponse } from "../../utils/json-response";
 import * as articleService from "./article-service";
 import { NextFunction, Request, Response } from "express";
-import { BadRequestError, InternalServerError, NotFoundError } from "../../utils/app-error";
+import { InternalServerError, NotFoundError } from "../../utils/app-error";
 import { HttpStatusCode } from "../../utils/http-status-code";
 import { IFullQuery } from "../../utils/build-query";
 
