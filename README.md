@@ -13,7 +13,3 @@ Express, PostgreSQL, Docker
     data: any | undefined,
 }
 ```
-
-## **Authorized Requests**
-
-Marked with \* are the endpoints that require auth cookie with jwt token.
